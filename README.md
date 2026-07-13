@@ -8,18 +8,46 @@
 
 ## 1. التثبيت
 
-### أ) عبر Composer (من مستودع محلي/خاص)
-```bash
-composer require edzeery/my-status-kit
-```
-> إن لم تُنشر الحزمة على Packagist بعد، أضف مستودعها في `composer.json` الخاص بمشروعك:
-> ```json
-> "repositories": [
->   { "type": "path", "url": "../laravel-status-kit" }
-> ]
-> ```
+الحزمة منشورة على GitHub: **https://github.com/Edzeery/mystatuskit** (غير منشورة على Packagist حاليًا)، لذا التثبيت يتم عبر مستودع من نوع VCS.
 
-الحزمة تُسجَّل تلقائيًا (Auto-Discovery). لا حاجة لإضافة Provider يدويًا.
+### أ) في أي مشروع Laravel — أضف المستودع ثم اطلب الحزمة
+في `composer.json` الخاص بمشروعك:
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Edzeery/mystatuskit"
+        }
+    ],
+    "require": {
+        "edzeery/mystatuskit": "^1.0"
+    }
+}
+```
+ثم:
+```bash
+composer update edzeery/mystatuskit
+```
+
+> **لماذا `^1.0` وليس `dev-main`؟**
+> `^1.0` يعتمد على Tag رسمي (Release) بدل آخر commit على `main`، فهو أكثر استقرارًا ولا ينكسر مشروعك عند أي push جديد على الحزمة. تأكد من وجود Tag منشور فعلًا على GitHub (`Releases → v1.0.0`) قبل استخدام هذه الصيغة — وإلا استخدم `dev-main` مؤقتًا لحين إنشاء أول Tag.
+
+### ب) للتطوير المحلي فقط (بدون GitHub، نفس الجهاز)
+```json
+"repositories": [
+    { "type": "path", "url": "../laravel-status-kit" }
+]
+```
+مفيد أثناء تطوير الحزمة نفسها: أي تعديل ينعكس فورًا بدون commit/push.
+
+### ج) بعد نشرها على Packagist مستقبلًا (اختياري)
+إذا سجّلت الحزمة على packagist.org، يصبح التثبيت بسطر واحد فقط بدون كتابة `repositories`:
+```bash
+composer require edzeery/mystatuskit
+```
+
+الحزمة تُسجَّل تلقائيًا (Auto-Discovery) في كل الحالات أعلاه. لا حاجة لإضافة Provider يدويًا.
 
 ### ب) نشر الملفات القابلة للتخصيص (اختياري لكن مُستحسن)
 ```bash
@@ -148,6 +176,20 @@ Status::for('role', 'super_admin')->badge('heroicon');
 - `StatusManager` — قراءة config وبناء `StatusResult`.
 - `StatusResult` — DTO بواجهة fluent (`->color()->icon()->label()...`).
 - كل شيء مسجّل كـ Singleton في `StatusKitServiceProvider`.
+
+---
+
+## 7. الإصدارات (Releases)
+
+عند إصدار تحديث جديد للحزمة مستقبلًا:
+1. عدّل الكود ثم ادفعه لفرع `main` (عبر GitHub Desktop أو `git push`).
+2. من GitHub: `Releases → Draft a new release` → أنشئ Tag جديد يتبع [Semantic Versioning](https://semver.org):
+   - إصلاح بسيط (bug fix) → `v1.0.1`
+   - ميزة جديدة متوافقة رجوعيًا → `v1.1.0`
+   - تغيير يكسر التوافق (breaking change) → `v2.0.0`
+3. المشاريع التي تستعمل `"edzeery/mystatuskit": "^1.0"` ستحصل على التحديثات المتوافقة تلقائيًا عبر `composer update`، بدون كسر أي مشروع يستخدم إصدار أقدم.
+
+آخر إصدار حالي: **v1.0.0**
 
 ---
 
