@@ -79,6 +79,13 @@ class IconManager
 
         $svg = file_get_contents($path);
 
+        // حجم افتراضي معقول (يتبع حجم الخط المحيط) إذا الملف ماعندوش width/height أصلاً.
+        // بدون هذا، SVG بلا width/height يرندر بحجمه الطبيعي وقد يبان "كبير جدًا".
+        if (!preg_match('/\swidth\s*=/i', $svg)) {
+            $defaultSize = config('status-kit-icons.svg_size', '1em');
+            $svg = preg_replace('/<svg/i', '<svg width="' . $defaultSize . '" height="' . $defaultSize . '"', $svg, 1);
+        }
+
         if ($classes) {
             $svg = preg_replace('/<svg([^>]*)>/i', '<svg$1 class="' . $classes . '">', $svg, 1);
         }

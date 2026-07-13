@@ -51,7 +51,7 @@ composer require edzeery/mystatuskit
 
 ### ب) نشر الملفات القابلة للتخصيص (اختياري لكن مُستحسن)
 ```bash
-php artisan vendor:publish --tag=status-kit-config   # config/icons.php + config/statuses.php
+php artisan vendor:publish --tag=status-kit-config   # config/icons.php + config/statuses.php + config/status-kit-theme.php
 php artisan vendor:publish --tag=status-kit-lang      # lang/vendor/status-kit/{ar,en,fr}
 php artisan vendor:publish --tag=status-kit-views     # قالب البادج
 php artisan vendor:publish --tag=status-kit-svg       # ملفات heroicons SVG
@@ -100,13 +100,36 @@ import 'ionicons/dist/ionicons.js'; // أو عبر <script type="module"> في b
 
 ---
 
+## 2.5 اختيار فريموورك الألوان (Bootstrap 5 أو Tailwind)
+
+الحزمة تدعم فريمووركين للألوان/البادج، افتراضيًا **Bootstrap 5** (`text-bg-success`, `text-bg-danger`...):
+
+```
+php artisan vendor:publish --tag=status-kit-config   # ينشر config/status-kit-theme.php أيضًا
+```
+
+فـ `config/status-kit-theme.php`:
+```php
+'default_framework' => 'bootstrap', // أو 'tailwind' لاستعمال كلاسات light/dark القديمة من statuses.php
+```
+
+يمكن أيضًا تجاوز الافتراضي لكل استدعاء على حدة:
+```php
+Status::for('payment', 'paid')->color(framework: 'tailwind');
+Status::for('payment', 'paid')->badge(framework: 'tailwind');
+```
+
+> Bootstrap 5.1+ يوفر كلاسات `text-bg-*` جاهزة بلا أي CSS إضافي. إذا مشروعك Tailwind، بدّل الإعداد لـ `'tailwind'` وستُستعمل كلاسات `light`/`dark` اليدوية المعرّفة مع كل حالة في `config/statuses.php`.
+
+---
+
 ## 3. الاستعمال
 
 ### Facade
 ```php
 use Edzeery\MyStatusKit\Facades\Status;
 
-Status::for('payment', 'paid')->color();       // "text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/40"
+Status::for('payment', 'paid')->color();       // "text-bg-success" (Bootstrap 5) — أو Tailwind إذا بدّلت الframework، راجع القسم أدناه
 Status::for('payment', 'paid')->hex();          // "#16a34a"
 Status::for('payment', 'paid')->variant();      // "success"
 Status::for('payment', 'paid')->label();        // مترجمة حسب اللغة الحالية
@@ -196,4 +219,4 @@ Status::for('role', 'super_admin')->badge('heroicon');
 ## المتطلبات
 - PHP `^8.1`
 - Laravel `^10 | ^11 | ^12`
-- Tailwind CSS (للكلاسات الجاهزة في `light`/`dark`) — أو استخدم `hex()` مع أي نظام تنسيق آخر.
+- Bootstrap 5.1+ (الافتراضي، عبر كلاسات `text-bg-*`) أو Tailwind CSS (اختياري عبر `config/status-kit-theme.php`) — أو استخدم `hex()` مع أي نظام تنسيق آخر.

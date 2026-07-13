@@ -11,6 +11,7 @@ class StatusKitServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/icons.php', 'status-kit-icons');
         $this->mergeConfigFrom(__DIR__ . '/../config/statuses.php', 'status-kit-statuses');
+        $this->mergeConfigFrom(__DIR__ . '/../config/theme.php', 'status-kit-theme');
 
         $this->app->singleton(IconManager::class, fn () => new IconManager());
         $this->app->singleton('status-kit-icon', fn ($app) => $app->make(IconManager::class));
@@ -25,6 +26,7 @@ class StatusKitServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/icons.php'    => config_path('icons.php'),
             __DIR__ . '/../config/statuses.php' => config_path('statuses.php'),
+            __DIR__ . '/../config/theme.php'    => config_path('status-kit-theme.php'),
         ], 'status-kit-config');
 
         $this->publishes([
@@ -40,10 +42,13 @@ class StatusKitServiceProvider extends ServiceProvider
         ], 'status-kit-svg');
 
         // تحميل المصادر مباشرة (تعمل حتى بدون نشر)
+        // ملاحظة: namespace الترجمة "status-kit" لازم يطابق اسم مجلد النشر أعلاه
+        // (lang/vendor/status-kit) حتى تُقرأ الترجمات المخصصة تلقائيًا بعد النشر.
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'status-kit');
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'statuses');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'status-kit');
 
-        // إن قام المستخدم بنشر config/statuses.php أو config/icons.php محليًا، تُدمج فوق الافتراضي
+        // إن قام المستخدم بنشر config/statuses.php أو config/icons.php أو config/status-kit-theme.php
+        // محليًا، تُدمج فوق الافتراضي
         if (is_file(config_path('icons.php'))) {
             $this->app['config']->set('status-kit-icons', array_replace_recursive(
                 config('status-kit-icons', []),
@@ -54,6 +59,12 @@ class StatusKitServiceProvider extends ServiceProvider
             $this->app['config']->set('status-kit-statuses', array_replace_recursive(
                 config('status-kit-statuses', []),
                 require config_path('statuses.php')
+            ));
+        }
+        if (is_file(config_path('status-kit-theme.php'))) {
+            $this->app['config']->set('status-kit-theme', array_replace_recursive(
+                config('status-kit-theme', []),
+                require config_path('status-kit-theme.php')
             ));
         }
 
