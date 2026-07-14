@@ -229,7 +229,7 @@ Status::for('role', 'super_admin')->badge('heroicon');
 
 راجع [CHANGELOG.md](CHANGELOG.md) لتفاصيل كل إصدار.
 
-آخر إصدار حالي: **v1.0.2**
+آخر إصدار حالي: **v1.0.5**
 
 ---
 
