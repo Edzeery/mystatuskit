@@ -1,4 +1,8 @@
-# Laravel Status Kit
+# Edzeery Laravel Status Kit
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/edzeery/mystatuskit.svg)](https://packagist.org/packages/edzeery/mystatuskit)
+[![Total Downloads](https://img.shields.io/packagist/dt/edzeery/mystatuskit.svg)](https://packagist.org/packages/edzeery/mystatuskit)
+[![License](https://img.shields.io/packagist/l/edzeery/mystatuskit.svg)](https://github.com/Edzeery/mystatuskit/blob/main/LICENSE)
 
 مكتبة موحّدة لإدارة **ألوان وأيقونات الحالات** (Status Colors & Badges) في أي مشروع Laravel — بدون أي اعتماد على Filament أو أي حزمة UI خارجية.
 
@@ -8,10 +12,21 @@
 
 ## 1. التثبيت
 
-الحزمة منشورة على GitHub: **https://github.com/Edzeery/mystatuskit** (غير منشورة على Packagist حاليًا)، لذا التثبيت يتم عبر مستودع من نوع VCS.
+الحزمة منشورة الآن رسميًا على **[Packagist](https://packagist.org/packages/edzeery/mystatuskit)**، بالإضافة إلى المصدر على GitHub: **https://github.com/Edzeery/mystatuskit**
 
-### أ) في أي مشروع Laravel — أضف المستودع ثم اطلب الحزمة
-في `composer.json` الخاص بمشروعك:
+### أ) الطريقة الموصى بها — Packagist (سطر واحد، بدون أي إعداد إضافي)
+```bash
+composer require edzeery/mystatuskit
+```
+هذا كافٍ فـ أي مشروع Laravel، بلا حاجة لإضافة `repositories` فـ `composer.json`. Composer يجيب أحدث نسخة مستقرة متوافقة تلقائيًا حسب [Semantic Versioning](https://semver.org).
+
+للتقييد بنسخة رئيسية معينة (اختياري):
+```bash
+composer require edzeery/mystatuskit:^1.0
+```
+
+### ب) البديل: مستودع VCS مباشرة من GitHub
+مفيد إذا بغيت commit معيّن قبل ما يوصل Packagist (نادر، Packagist يتحدّث أوتوماتيكيًا عبر webhook)، أو لأي سبب آخر تفضّل فيه GitHub مباشرة:
 ```json
 {
     "repositories": [
@@ -30,26 +45,19 @@
 composer update edzeery/mystatuskit
 ```
 
-> **لماذا `^1.0` وليس `dev-main`؟**
-> `^1.0` يعتمد على Tag رسمي (Release) بدل آخر commit على `main`، فهو أكثر استقرارًا ولا ينكسر مشروعك عند أي push جديد على الحزمة. تأكد من وجود Tag منشور فعلًا على GitHub (`Releases → v1.0.0`) قبل استخدام هذه الصيغة — وإلا استخدم `dev-main` مؤقتًا لحين إنشاء أول Tag.
-
-### ب) للتطوير المحلي فقط (بدون GitHub، نفس الجهاز)
+### ج) للتطوير المحلي فقط (بدون GitHub، نفس الجهاز)
 ```json
 "repositories": [
     { "type": "path", "url": "../laravel-status-kit" }
 ]
 ```
-مفيد أثناء تطوير الحزمة نفسها: أي تعديل ينعكس فورًا بدون commit/push.
+مفيد أثناء تطوير الحزمة نفسها: أي تعديل ينعكس فورًا بدون commit/push/تاغ جديد.
 
-### ج) بعد نشرها على Packagist مستقبلًا (اختياري)
-إذا سجّلت الحزمة على packagist.org، يصبح التثبيت بسطر واحد فقط بدون كتابة `repositories`:
-```bash
-composer require edzeery/mystatuskit
-```
+> **الطريقتان (ب) و(ج) يبقيان يشتغلوا بشكل طبيعي حتى بعد النشر على Packagist** — مفيدين تحديدًا وقت تطوير الحزمة نفسها أو اختبار تعديل قبل ما يوصل لـ Release رسمي.
 
 الحزمة تُسجَّل تلقائيًا (Auto-Discovery) في كل الحالات أعلاه. لا حاجة لإضافة Provider يدويًا.
 
-### ب) نشر الملفات القابلة للتخصيص (اختياري لكن مُستحسن)
+### د) نشر الملفات القابلة للتخصيص (اختياري لكن مُستحسن)
 ```bash
 php artisan vendor:publish --tag=status-kit-config   # config/icons.php + config/statuses.php + config/status-kit-theme.php
 php artisan vendor:publish --tag=status-kit-lang      # lang/vendor/status-kit/{ar,en,fr}
@@ -104,7 +112,7 @@ import 'ionicons/dist/ionicons.js'; // أو عبر <script type="module"> في b
 
 الحزمة تدعم فريمووركين للألوان/البادج، افتراضيًا **Bootstrap 5** (`text-bg-success`, `text-bg-danger`...):
 
-```
+```bash
 php artisan vendor:publish --tag=status-kit-config   # ينشر config/status-kit-theme.php أيضًا
 ```
 
@@ -129,13 +137,18 @@ Status::for('payment', 'paid')->badge(framework: 'tailwind');
 ```php
 use Edzeery\MyStatusKit\Facades\Status;
 
-Status::for('payment', 'paid')->color();       // "text-bg-success" (Bootstrap 5) — أو Tailwind إذا بدّلت الframework، راجع القسم أدناه
+Status::for('payment', 'paid')->color();       // "text-bg-success" (Bootstrap 5) — أو Tailwind إذا بدّلت الframework، راجع القسم أعلاه
 Status::for('payment', 'paid')->hex();          // "#16a34a"
 Status::for('payment', 'paid')->variant();      // "success"
 Status::for('payment', 'paid')->label();        // مترجمة حسب اللغة الحالية
 Status::for('payment', 'paid')->icon('fa');     // <i class="fas fa-check-circle"></i>
 Status::for('payment', 'paid')->badge('ion');   // HTML بادج كامل جاهز
 Status::for('payment', 'paid')->toArray();      // لإرساله كـ JSON مثلاً في API
+
+// بادجات عامة جاهزة (نطاق "general") قابلة للاستعمال فوق أي عنصر
+Status::for('general', 'featured')->badge('fa');     // ⭐ مميز — أصفر
+Status::for('general', 'new')->badge('bi');          // جديد — أزرق
+Status::for('general', 'popular')->badge('ion');     // الأكثر رواجًا — أحمر
 ```
 
 ### Helpers (نفس أسلوب المكتبة القديمة، متوافقة رجوعيًا)
@@ -155,6 +168,7 @@ getIconHtml('paid');                             // متوافقة كليًا م
 ```blade
 <x-status-badge domain="payment" status="paid" set="fa" />
 <x-status-badge domain="user" status="banned" set="heroicon" class="text-sm" />
+<x-status-badge domain="general" status="featured" set="fa" />
 ```
 
 ### الأدوار (roles.php سابقًا أصبحت نطاق "role")
@@ -210,13 +224,16 @@ Status::for('role', 'super_admin')->badge('heroicon');
    - إصلاح بسيط (bug fix) → `v1.0.1`
    - ميزة جديدة متوافقة رجوعيًا → `v1.1.0`
    - تغيير يكسر التوافق (breaking change) → `v2.0.0`
-3. المشاريع التي تستعمل `"edzeery/mystatuskit": "^1.0"` ستحصل على التحديثات المتوافقة تلقائيًا عبر `composer update`، بدون كسر أي مشروع يستخدم إصدار أقدم.
+3. **Packagist يتحدّث أوتوماتيكيًا** عبر الـ GitHub webhook فور نشر Tag جديد (بشرط تفعيل الـ webhook من صفحة الحزمة على packagist.org — راجع "Settings" فيها إذا توقف التحديث لأي سبب).
+4. المشاريع التي تستعمل `"edzeery/mystatuskit": "^1.0"` (أو `composer require edzeery/mystatuskit` بلا تقييد) ستحصل على التحديثات المتوافقة تلقائيًا عبر `composer update`، بدون كسر أي مشروع يستخدم إصدار أقدم.
 
-آخر إصدار حالي: **v1.0.0**
+راجع [CHANGELOG.md](CHANGELOG.md) لتفاصيل كل إصدار.
+
+آخر إصدار حالي: **v1.0.2**
 
 ---
 
 ## المتطلبات
 - PHP `^8.1`
-- Laravel `^10 | ^11 | ^12`
+- Laravel `^10 | ^11 | ^12 | ^13`
 - Bootstrap 5.1+ (الافتراضي، عبر كلاسات `text-bg-*`) أو Tailwind CSS (اختياري عبر `config/status-kit-theme.php`) — أو استخدم `hex()` مع أي نظام تنسيق آخر.
