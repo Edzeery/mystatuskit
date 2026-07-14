@@ -218,5 +218,5 @@ Status::for('role', 'super_admin')->badge('heroicon');
 
 ## المتطلبات
 - PHP `^8.1`
-- Laravel `^10 | ^11 | ^12 | ^12 `
+- Laravel `^10 | ^11 | ^12 | ^13 `
 - Bootstrap 5.1+ (الافتراضي، عبر كلاسات `text-bg-*`) أو Tailwind CSS (اختياري عبر `config/status-kit-theme.php`) — أو استخدم `hex()` مع أي نظام تنسيق آخر.
