@@ -76,6 +76,14 @@ return [
         'support'  => 'fa-headset',
         'shield'   => 'fa-shield-alt',
         'store'    => 'fa-store',
+
+        // حالات عامة قابلة لإعادة الاستعمال عبر أي دومين
+        'featured'    => 'fa-star',
+        'new'         => 'fa-bolt',
+        'popular'     => 'fa-fire',
+        'verified'    => 'fa-circle-check',
+        'recommended' => 'fa-thumbs-up',
+        'limited'     => 'fa-hourglass-half',
     ],
 
     // ==========================================================
@@ -131,6 +139,14 @@ return [
         'support'  => 'bi-headset',
         'shield'   => 'bi-shield-check',
         'store'    => 'bi-shop',
+
+        // حالات عامة قابلة لإعادة الاستعمال عبر أي دومين
+        'featured'    => 'bi-star-fill',
+        'new'         => 'bi-lightning-charge-fill',
+        'popular'     => 'bi-fire',
+        'verified'    => 'bi-patch-check-fill',
+        'recommended' => 'bi-hand-thumbs-up-fill',
+        'limited'     => 'bi-hourglass-split',
     ],
 
     // ==========================================================
@@ -209,6 +225,14 @@ return [
         'menu'     => 'menu-outline',
         'apps'     => 'apps-outline',
         'store'    => 'storefront-outline',
+
+        // حالات عامة قابلة لإعادة الاستعمال عبر أي دومين
+        'featured'    => 'star',
+        'new'         => 'flash-outline',
+        'popular'     => 'flame-outline',
+        'verified'    => 'shield-checkmark-outline',
+        'recommended' => 'thumbs-up-outline',
+        'limited'     => 'hourglass-outline',
     ],
 
     // ==========================================================
@@ -250,5 +274,8 @@ return [
         'user-circle'        => 'user-circle',
         'user'                => 'user',
         'clipboard-check'    => 'clipboard-document-check',
+
+        // حالات عامة قابلة لإعادة الاستعمال عبر أي دومين
+        'featured' => 'star',
     ],
 ];

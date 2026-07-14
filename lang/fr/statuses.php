@@ -34,5 +34,7 @@ return [
     'general' => [
         'info' => 'Info', 'success' => 'Succès', 'warning' => 'Avertissement',
         'danger' => 'Danger', 'gray' => 'Non spécifié',
+        'featured' => 'En vedette', 'new' => 'Nouveau', 'popular' => 'Populaire',
+        'verified' => 'Vérifié', 'recommended' => 'Recommandé', 'limited' => 'Offre limitée',
     ],
 ];

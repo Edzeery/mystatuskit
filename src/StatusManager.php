@@ -32,10 +32,13 @@ class StatusManager
     public function domain(string $domain): array
     {
         $items = config("status-kit-statuses.{$domain}", []);
+        $result = [];
 
-        return collect($items)
-            ->map(fn ($data, $status) => new StatusResult($domain, $status, $data, $this->iconManager))
-            ->all();
+        foreach ($items as $status => $data) {
+            $result[$status] = new StatusResult($domain, $status, $data, $this->iconManager);
+        }
+
+        return $result;
     }
 
     /** هل الحالة معرّفة أصلاً في الconfig */

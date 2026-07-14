@@ -34,5 +34,7 @@ return [
     'general' => [
         'info' => 'Info', 'success' => 'Success', 'warning' => 'Warning',
         'danger' => 'Danger', 'gray' => 'Unspecified',
+        'featured' => 'Featured', 'new' => 'New', 'popular' => 'Popular',
+        'verified' => 'Verified', 'recommended' => 'Recommended', 'limited' => 'Limited',
     ],
 ];

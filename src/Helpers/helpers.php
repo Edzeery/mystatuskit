@@ -74,7 +74,7 @@ if (!function_exists('getIconHtml')) {
             return Icon::svg($name, $classes ?? '') ?? '';
         }
 
-        return Icon::render($name, $set ?? 'fa', $classes ?? '');
+        return Icon::render($name, $set ?? config('status-kit-icons.default_set', 'ion'), $classes ?? '');
     }
 }
 

@@ -34,5 +34,7 @@ return [
     'general' => [
         'info' => 'معلومة', 'success' => 'نجاح', 'warning' => 'تحذير',
         'danger' => 'خطر', 'gray' => 'غير محدد',
+        'featured' => 'مميز', 'new' => 'جديد', 'popular' => 'الأكثر رواجًا',
+        'verified' => 'موثّق', 'recommended' => 'موصى به', 'limited' => 'عرض محدود',
     ],
 ];
