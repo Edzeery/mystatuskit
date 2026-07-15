@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.1.2
+
+### إصلاحات (Bug Fixes)
+
+- **remap أيقونات heroicon ناقصة** — `user-plus` → `user`، `cloud-arrow-up` → `arrow-path`، `toggle-on` → `check-circle`، `toggle-off` → `x-circle` (الملفات الأصلية غير موجودة في `resources/svg/heroicons/`).
+- **إضافة أيقونة `verified`** إلى heroicon set (`check-circle`).
+- **إضافة `online`/`offline`** إلى 4 مجموعات أيقونات (fa, bi, ion, heroicon) — كانت تنقص وتعود للأيقونة الافتراضية.
+
+---
+
 ## v1.1.1
 
 ### إصلاحات (Bug Fixes)

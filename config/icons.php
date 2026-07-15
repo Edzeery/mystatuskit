@@ -71,6 +71,8 @@ return [
         'completed' => 'fa-check-circle',
         'out_of_stock' => 'fa-box-open',
         'discontinued' => 'fa-ban',
+        'online'      => 'fa-circle',
+        'offline'     => 'fa-circle-minus',
         'email_unverified' => 'fa-envelope',
 
         'home'     => 'fa-home',
@@ -215,6 +217,8 @@ return [
         'out_of_stock' => 'bi-box-seam',
         'discontinued' => 'bi-slash-circle',
         'email_unverified' => 'bi-envelope',
+        'online'      => 'bi-circle-fill',
+        'offline'     => 'bi-circle',
 
         'home'     => 'bi-house',
         'user'     => 'bi-person',
@@ -358,6 +362,8 @@ return [
         'out_of_stock' => 'cube-outline',
         'discontinued' => 'ban-outline',
         'email_unverified' => 'mail-outline',
+        'online'      => 'radio-button-on-outline',
+        'offline'     => 'radio-button-off-outline',
 
         'wallet'   => 'wallet-outline',
         'card'     => 'card-outline',
@@ -538,10 +544,10 @@ return [
         'clipboard-check'    => 'clipboard-document-check',
 
         // أيقونات الإشعارات
-        'new_user'              => 'user-plus',
+        'new_user'              => 'user',
         'new_payment'           => 'currency-dollar',
         'subscription_activated' => 'star',
-        'backup_completed'      => 'cloud-arrow-up',
+        'backup_completed'      => 'arrow-path',
         'system_alert'          => 'exclamation-triangle',
 
         // حالات عامة قابلة لإعادة الاستعمال عبر أي دومين
@@ -550,10 +556,13 @@ return [
         'popular'     => 'fire',
         'recommended' => 'hand-thumb-up',
         'limited'     => 'flag',
+        'verified'    => 'check-circle',
+        'online'      => 'check-circle',
+        'offline'     => 'x-circle',
         'yes'       => 'check-circle',
         'no'        => 'x-circle',
-        'on'        => 'toggle-on',
-        'off'       => 'toggle-off',
+        'on'        => 'check-circle',
+        'off'       => 'x-circle',
         'enable'    => 'check-circle',
         'disable'   => 'x-circle',
         'open'      => 'folder-open',
