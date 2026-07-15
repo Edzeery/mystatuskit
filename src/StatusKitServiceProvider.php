@@ -69,6 +69,7 @@ class StatusKitServiceProvider extends ServiceProvider
         }
 
         Blade::component('status-kit::components.status-badge', 'status-badge');
+        Blade::component('status-kit::components.status-select', 'status-select');
 
         // @statusKitAssets(['fa','bi']) لإدراج روابط CDN لمكتبات الأيقونات مباشرة
         Blade::directive('statusKitAssets', function ($expression) {

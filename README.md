@@ -1,12 +1,22 @@
-# Edzeery Laravel Status Kit
+# HalaKit — Laravel Status Kit
+### (`edzeery/mystatuskit`)
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/edzeery/mystatuskit.svg)](https://packagist.org/packages/edzeery/mystatuskit)
 [![Total Downloads](https://img.shields.io/packagist/dt/edzeery/mystatuskit.svg)](https://packagist.org/packages/edzeery/mystatuskit)
 [![License](https://img.shields.io/packagist/l/edzeery/mystatuskit.svg)](https://github.com/Edzeery/mystatuskit/blob/main/LICENSE)
 
-مكتبة موحّدة لإدارة **ألوان وأيقونات الحالات** (Status Colors & Badges) في أي مشروع Laravel — بدون أي اعتماد على Filament أو أي حزمة UI خارجية.
+مكتبة موحّدة لإدارة **ألوان وأيقونات وقوائم الحالات** (Status Colors, Icons, Badges & Select) في أي مشروع Laravel — بدون أي اعتماد على Filament أو أي حزمة UI خارجية.
 
-تدعم: `payment`, `subscription`, `user`, `stores`, `order`, `product`, `role`, `general` — وأي نطاق مخصص تضيفه أنت.
+تدعم: `payment`, `subscription`, `user`, `stores`, `order`, `product`, `role`, `general` (73 حالة جاهزة) — وأي نطاق مخصص تضيفه أنت.
+
+---
+
+## 🆕 الجديد فـ v1.1.0
+
+- **`<x-status-select>`**: قائمة اختيار مخصصة بـ Alpine.js — أيقونة + نقطة لون + بحث + تنقل بالكيبورد + دعم Livewire `wire:model` + RTL/Dark mode تلقائيًا
+- **دومين `general` أصبح 73 حالة جاهزة** (بعد اكتمال الترجمة والأيقونات لـ 11 حالة كانت ناقصة: `beta`, `deprecated`, `archived`, `delete`, `locked`, `unlocked`, `pending`, `approved`, `rejected`, `highlighted`, `trending`)
+- **تطابق كامل 100%** بين `config/statuses.php` والترجمات الثلاث (AR/EN/FR) — بلا نقص وبلا تكرار
+- راجع [CHANGELOG.md](CHANGELOG.md) للتفاصيل الكاملة
 
 ---
 
@@ -61,9 +71,11 @@ composer update edzeery/mystatuskit
 ```bash
 php artisan vendor:publish --tag=status-kit-config   # config/icons.php + config/statuses.php + config/status-kit-theme.php
 php artisan vendor:publish --tag=status-kit-lang      # lang/vendor/status-kit/{ar,en,fr}
-php artisan vendor:publish --tag=status-kit-views     # قالب البادج
+php artisan vendor:publish --tag=status-kit-views     # قوالب البادج والـ Select
 php artisan vendor:publish --tag=status-kit-svg       # ملفات heroicons SVG
 ```
+
+> ⚠️ **بعد كل `composer update` للحزمة**، إذا كنت ناشر `status-kit-views` من قبل، أعد نشرها مع `--force` (راجع قسم "استكشاف الأخطاء" فتحت لو ظهر خطأ "Unable to locate a class or view for component").
 
 ---
 
@@ -104,7 +116,7 @@ import 'ionicons/dist/ionicons.js'; // أو عبر <script type="module"> في b
 
 ثم أضف الروابط يدويًا في layout بدل `@statusKitAssets`.
 
-> **ملاحظة Heroicons**: لا تحتاج أي تثبيت — ملفات SVG مضمّنة داخل الحزمة (`resources/svg/heroicons`) وتُعرض مباشرة بدون خط خارجي. الأيقونات المرفقة هي نسخ مبسّطة (placeholder) بنفس تسمية Heroicons الرسمية؛ لمطابقة بصرية 100% استبدل الملفات بالنسخة الأصلية من [heroicons.com](https://heroicons.com) أو `npm i heroicons` ثم انسخها لنفس المجلد بنفس الأسماء.
+> **ملاحظة Heroicons**: لا تحتاج أي تثبيت — ملفات SVG مضمّنة داخل الحزمة (`resources/svg/heroicons`) وتُعرض مباشرة بدون خط خارجي. بعض المفاتيح الأحدث (خصوصًا فـ دومين `general` الموسّع) تُعيد استعمال ملفات SVG موجودة كتقريب بصري ريثما تُضاف ملفاتها الخاصة — لمطابقة بصرية 100% استبدل/أضف الملفات من [heroicons.com](https://heroicons.com) أو `npm i heroicons` بنفس الأسماء.
 
 ---
 
@@ -145,10 +157,12 @@ Status::for('payment', 'paid')->icon('fa');     // <i class="fas fa-check-circle
 Status::for('payment', 'paid')->badge('ion');   // HTML بادج كامل جاهز
 Status::for('payment', 'paid')->toArray();      // لإرساله كـ JSON مثلاً في API
 
-// بادجات عامة جاهزة (نطاق "general") قابلة للاستعمال فوق أي عنصر
+// بادجات عامة جاهزة (نطاق "general"، 73 حالة) قابلة للاستعمال فوق أي عنصر
 Status::for('general', 'featured')->badge('fa');     // ⭐ مميز — أصفر
 Status::for('general', 'new')->badge('bi');          // جديد — أزرق
 Status::for('general', 'popular')->badge('ion');     // الأكثر رواجًا — أحمر
+Status::for('general', 'approved')->badge('fa');     // معتمد — أخضر
+Status::for('general', 'archived')->badge('bi');     // مؤرشف — رمادي
 ```
 
 ### Helpers (نفس أسلوب المكتبة القديمة، متوافقة رجوعيًا)
@@ -164,12 +178,50 @@ svg_icon('custom-logo', 'w-6 h-6');              // من resources/svg
 getIconHtml('paid');                             // متوافقة كليًا مع النسخة القديمة
 ```
 
-### Blade Component
+### Blade Component (بادج)
 ```blade
 <x-status-badge domain="payment" status="paid" set="fa" />
 <x-status-badge domain="user" status="banned" set="heroicon" class="text-sm" />
 <x-status-badge domain="general" status="featured" set="fa" />
 ```
+
+### Select Component بأيقونات (Custom Dropdown مميز)
+
+`<x-status-select>` — قائمة اختيار مخصصة (بديل عن `<select>` العادي) مبنية بـ **Alpine.js** (يتوفر تلقائيًا مع Livewire 3)، تعرض أيقونة + نقطة لون + تسمية لكل حالة، مع بحث اختياري وتنقل بالكيبورد ودعم Dark mode/RTL تلقائيًا.
+
+```blade
+{{-- استعمال بسيط --}}
+<x-status-select domain="payment" name="status" selected="paid" />
+
+{{-- مع Livewire wire:model --}}
+<x-status-select domain="subscription" wire:model.live="subscriptionStatus" />
+
+{{-- بحث (مفيد للدومينات الكبيرة زي general) --}}
+<x-status-select domain="general" searchable placeholder="اختر حالة..." />
+
+{{-- تحكم إضافي --}}
+<x-status-select
+    domain="order"
+    name="order_status"
+    selected="pending"
+    set="bi"
+    size="lg"
+    disabled
+/>
+```
+
+**Props:** `domain` (إجباري) · `name` · `selected` · `set` · `placeholder` · `disabled` · `searchable` · `size` (`sm`|`md`|`lg`) · `class`
+
+**إعدادات قابلة للتخصيص** عبر `config/status-kit-theme.php['select']`:
+```php
+'select' => [
+    'max_height'  => '16rem', // تمرير تلقائي إذا الخيارات كثيرة
+    'z_index'     => 50,      // عدّلها إذا تعارضت مع navbar/modal
+    'default_set' => null,    // null = يتبع status-kit-icons.default_set
+],
+```
+
+> **يتطلب Alpine.js** (متوفر تلقائيًا إذا عندك Livewire مثبت) و**Bootstrap Icons** (`bi bi-chevron-down`, `bi bi-check-lg` للسهم وعلامة الاختيار — ثابتة بغض النظر عن `set` المختارة للحالات نفسها).
 
 ### الأدوار (roles.php سابقًا أصبحت نطاق "role")
 ```php
@@ -190,6 +242,8 @@ Status::for('role', 'super_admin')->badge('heroicon');
 ```php
 'invoice' => ['draft' => 'مسودة'],
 ```
+
+> **نصيحة:** بعد أي إضافة، تأكد أن المفتاح موجود بالضبط فـ الثلاث ملفات لغة (`ar`/`en`/`fr`) — بلا نقص وبلا تكرار — تفاديًا لظهور نص `Str::headline()` الاحتياطي بدل الترجمة الحقيقية فبعض اللغات.
 
 ---
 
@@ -216,7 +270,32 @@ Status::for('role', 'super_admin')->badge('heroicon');
 
 ---
 
-## 7. الإصدارات (Releases)
+## 7. استكشاف الأخطاء (Troubleshooting)
+
+### `Unable to locate a class or view for component [status-select]` (أو أي component آخر)
+السبب الشائع: نشرت `status-kit-views` قبل فنسخة قديمة، وLaravel يفضّل المجلد المنشور فمشروعك على ملفات الحزمة الجديدة. الحل:
+```bash
+php artisan vendor:publish --tag=status-kit-views --force
+php artisan view:clear
+```
+إذا استمر الخطأ:
+```bash
+php artisan optimize:clear
+composer dump-autoload
+```
+
+### الترجمة ترجع بالإنجليزي/عنوان خام (`Str::headline()`) بدل النص الصحيح
+تأكد من مطابقة المفتاح فـ `config/statuses.php` مع نفس المفتاح فـ `lang/vendor/status-kit/{locale}/statuses.php` (بعد النشر)، ونفّذ:
+```bash
+php artisan config:clear
+```
+
+### الألوان ما تبانش
+تأكد من `config/status-kit-theme.php['default_framework']` مطابق لـ CSS framework الفعلي فمشروعك (`bootstrap` أو `tailwind`) — راجع قسم [2.5](#25-اختيار-فريموورك-الألوان-bootstrap-5-أو-tailwind).
+
+---
+
+## 8. الإصدارات (Releases)
 
 عند إصدار تحديث جديد للحزمة مستقبلًا:
 1. عدّل الكود ثم ادفعه لفرع `main` (عبر GitHub Desktop أو `git push`).
@@ -229,7 +308,7 @@ Status::for('role', 'super_admin')->badge('heroicon');
 
 راجع [CHANGELOG.md](CHANGELOG.md) لتفاصيل كل إصدار.
 
-آخر إصدار حالي: **v1.0.5**
+آخر إصدار حالي: **v1.1.0**
 
 ---
 
@@ -237,3 +316,4 @@ Status::for('role', 'super_admin')->badge('heroicon');
 - PHP `^8.1`
 - Laravel `^10 | ^11 | ^12 | ^13`
 - Bootstrap 5.1+ (الافتراضي، عبر كلاسات `text-bg-*`) أو Tailwind CSS (اختياري عبر `config/status-kit-theme.php`) — أو استخدم `hex()` مع أي نظام تنسيق آخر.
+- Alpine.js (فقط إذا استعملت `<x-status-select>` — متوفر تلقائيًا مع Livewire 3).
