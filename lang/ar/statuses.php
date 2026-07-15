@@ -9,6 +9,7 @@ return [
         'refunded' => 'مسترجع',
         'canceled' => 'ملغى',
     ],
+    
     'subscription' => [
         'active' => 'نشط',
         'pending' => 'قيد الانتظار',
@@ -18,6 +19,7 @@ return [
         'canceled' => 'ملغى',
         'suspended' => 'موقوف',
     ],
+
     'user' => [
         'active' => 'نشط',
         'inactive' => 'غير نشط',
@@ -39,6 +41,7 @@ return [
         'approved' => 'معتمد',
         'rejected' => 'مرفوض',
     ],
+    
     'order' => [
         'pending' => 'قيد الانتظار',
         'processing' => 'قيد المعالجة',
@@ -46,12 +49,14 @@ return [
         'canceled' => 'ملغى',
         'refunded' => 'مسترجع',
     ],
+
     'product' => [
         'active' => 'متوفر',
         'inactive' => 'غير مفعّل',
         'out_of_stock' => 'نفدت الكمية',
         'discontinued' => 'متوقف',
     ],
+
     'role' => [
         'super_admin' => 'المشرف العام',
         'admin' => 'مشرف',
