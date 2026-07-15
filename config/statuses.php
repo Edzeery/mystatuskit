@@ -180,6 +180,19 @@ return [
         'volume-mute' => ['variant' => 'gray',  'light' => 'text-gray-700 bg-gray-100',     'dark' => 'dark:text-gray-300 dark:bg-gray-800',       'hex' => '#9ca3af', 'icon' => 'volume-mute'],
         'play-circle' => ['variant' => 'success', 'light' => 'text-green-700 bg-green-100', 'dark' => 'dark:text-green-300 dark:bg-green-900/40',  'hex' => '#16a34a', 'icon' => 'play-circle'],
         'pause-circle' => ['variant' => 'warning', 'light' => 'text-yellow-700 bg-yellow-100', 'dark' => 'dark:text-yellow-300 dark:bg-yellow-900/40', 'hex' => '#facc15', 'icon' => 'pause-circle'],
+
+        // دورة حياة عنصر (lifecycle) — قابلة لإعادة الاستعمال زادة عبر أي دومين
+        'beta'        => ['variant' => 'info',    'light' => 'text-blue-700 bg-blue-100',     'dark' => 'dark:text-blue-300 dark:bg-blue-900/40',    'hex' => '#2563eb', 'icon' => 'beta'],
+        'deprecated'  => ['variant' => 'gray',    'light' => 'text-gray-700 bg-gray-100',     'dark' => 'dark:text-gray-300 dark:bg-gray-800',       'hex' => '#9ca3af', 'icon' => 'deprecated'],
+        'archived'    => ['variant' => 'gray',    'light' => 'text-gray-700 bg-gray-100',     'dark' => 'dark:text-gray-300 dark:bg-gray-800',       'hex' => '#9ca3af', 'icon' => 'archived'],
+        'delete'      => ['variant' => 'danger',  'light' => 'text-red-700 bg-red-100',       'dark' => 'dark:text-red-300 dark:bg-red-900/40',      'hex' => '#dc2626', 'icon' => 'delete'],
+        'locked'      => ['variant' => 'gray',    'light' => 'text-gray-700 bg-gray-100',     'dark' => 'dark:text-gray-300 dark:bg-gray-800',       'hex' => '#9ca3af', 'icon' => 'locked'],
+        'unlocked'    => ['variant' => 'success', 'light' => 'text-green-700 bg-green-100',   'dark' => 'dark:text-green-300 dark:bg-green-900/40',  'hex' => '#16a34a', 'icon' => 'unlocked'],
+        'pending'     => ['variant' => 'warning', 'light' => 'text-yellow-700 bg-yellow-100', 'dark' => 'dark:text-yellow-300 dark:bg-yellow-900/40', 'hex' => '#facc15', 'icon' => 'pending'],
+        'approved'    => ['variant' => 'success', 'light' => 'text-green-700 bg-green-100',   'dark' => 'dark:text-green-300 dark:bg-green-900/40',  'hex' => '#16a34a', 'icon' => 'approved'],
+        'rejected'    => ['variant' => 'danger',  'light' => 'text-red-700 bg-red-100',       'dark' => 'dark:text-red-300 dark:bg-red-900/40',      'hex' => '#dc2626', 'icon' => 'rejected'],
+        'highlighted' => ['variant' => 'warning', 'light' => 'text-yellow-700 bg-yellow-100', 'dark' => 'dark:text-yellow-300 dark:bg-yellow-900/40', 'hex' => '#facc15', 'icon' => 'highlighted'],
+        'trending'    => ['variant' => 'danger',  'light' => 'text-red-700 bg-red-100',       'dark' => 'dark:text-red-300 dark:bg-red-900/40',      'hex' => '#dc2626', 'icon' => 'trending'],
     ],
 
 ];

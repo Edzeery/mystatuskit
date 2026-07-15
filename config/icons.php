@@ -176,6 +176,15 @@ return [
         'volume-mute' => 'fa-volume-xmark',
         'play-circle' => 'fa-circle-play',
         'pause-circle' => 'fa-circle-pause',
+
+        // حالات عامة إضافية (workflow/lifecycle)
+        'beta'        => 'fa-flask',
+        'deprecated'  => 'fa-triangle-exclamation',
+        'archived'    => 'fa-box-archive',
+        'locked'      => 'fa-lock',
+        'unlocked'    => 'fa-lock-open',
+        'highlighted' => 'fa-highlighter',
+        'trending'    => 'fa-arrow-trend-up',
     ],
 
     // ==========================================================
@@ -310,6 +319,15 @@ return [
         'volume-mute' => 'bi-volume-mute-fill',
         'play-circle' => 'bi-play-circle-fill',
         'pause-circle' => 'bi-pause-circle-fill',
+
+        // حالات عامة إضافية (workflow/lifecycle)
+        'beta'        => 'bi-flask',
+        'deprecated'  => 'bi-exclamation-triangle-fill',
+        'archived'    => 'bi-archive-fill',
+        'locked'      => 'bi-lock-fill',
+        'unlocked'    => 'bi-unlock-fill',
+        'highlighted' => 'bi-highlighter',
+        'trending'    => 'bi-graph-up-arrow',
     ],
 
     // ==========================================================
@@ -467,6 +485,15 @@ return [
         'volume-mute' => 'volume-mute-outline',
         'play-circle' => 'play-circle-outline',
         'pause-circle' => 'pause-circle-outline',
+
+        // حالات عامة إضافية (workflow/lifecycle)
+        'beta'        => 'flask-outline',
+        'deprecated'  => 'warning-outline',
+        'archived'    => 'archive-outline',
+        'locked'      => 'lock-closed-outline',
+        'unlocked'    => 'lock-open-outline',
+        'highlighted' => 'ribbon-outline',
+        'trending'    => 'trending-up-outline',
     ],
 
     // ==========================================================
@@ -567,5 +594,15 @@ return [
         'volume-mute' => 'speaker-x-mark',
         'play-circle' => 'play-circle',
         'pause-circle' => 'pause-circle',
+
+        // حالات عامة إضافية — نعيد استعمال ملفات SVG موجودة فعليًا (بلا حاجة لملفات جديدة)
+        'beta'        => 'exclamation-circle',
+        'deprecated'  => 'exclamation-triangle',
+        'archived'    => 'lock-closed',
+        'delete'      => 'x-mark',
+        'locked'      => 'lock-closed',
+        'unlocked'    => 'lock-open',
+        'highlighted' => 'star',
+        'trending'    => 'arrow-path',
     ],
 ];

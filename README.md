@@ -171,6 +171,44 @@ getIconHtml('paid');                             // متوافقة كليًا م
 <x-status-badge domain="general" status="featured" set="fa" />
 ```
 
+### Select Component بأيقونات (Custom Dropdown مميز)
+
+`<x-status-select>` — قائمة اختيار مخصصة (بديل عن `<select>` العادي) مبنية بـ **Alpine.js** (يتوفر تلقائيًا مع Livewire 3)، تعرض أيقونة + نقطة لون + تسمية لكل حالة، مع بحث اختياري وتنقل بالكيبورد ودعم Dark mode/RTL تلقائيًا.
+
+```blade
+{{-- استعمال بسيط --}}
+<x-status-select domain="payment" name="status" selected="paid" />
+
+{{-- مع Livewire wire:model --}}
+<x-status-select domain="subscription" wire:model.live="subscriptionStatus" />
+
+{{-- بحث (مفيد للدومينات الكبيرة زي general) --}}
+<x-status-select domain="general" searchable placeholder="اختر حالة..." />
+
+{{-- تحكم إضافي --}}
+<x-status-select
+    domain="order"
+    name="order_status"
+    selected="pending"
+    set="bi"
+    size="lg"
+    disabled
+/>
+```
+
+**Props:** `domain` (إجباري) · `name` · `selected` · `set` · `placeholder` · `disabled` · `searchable` · `size` (`sm`|`md`|`lg`) · `class`
+
+**إعدادات قابلة للتخصيص** عبر `config/status-kit-theme.php['select']`:
+```php
+'select' => [
+    'max_height'  => '16rem', // تمرير تلقائي إذا الخيارات كثيرة
+    'z_index'     => 50,      // عدّلها إذا تعارضت مع navbar/modal
+    'default_set' => null,    // null = يتبع status-kit-icons.default_set
+],
+```
+
+> **يتطلب Alpine.js** (متوفر تلقائيًا إذا عندك Livewire مثبت) و**Bootstrap Icons** (`bi bi-chevron-down`, `bi bi-check-lg` للسهم وعلامة الاختيار — ثابتة بغض النظر عن `set` المختارة للحالات نفسها).
+
 ### الأدوار (roles.php سابقًا أصبحت نطاق "role")
 ```php
 Status::for('role', 'super_admin')->badge('heroicon');
@@ -229,7 +267,7 @@ Status::for('role', 'super_admin')->badge('heroicon');
 
 راجع [CHANGELOG.md](CHANGELOG.md) لتفاصيل كل إصدار.
 
-آخر إصدار حالي: **v1.0.5**
+آخر إصدار حالي: **v1.1.0**
 
 ---
 

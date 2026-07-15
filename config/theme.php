@@ -35,4 +35,13 @@ return [
         'tailwind'  => 'status-badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
     ],
 
+    // ==========================================================
+    // إعدادات مكوّن <x-status-select> (Custom Dropdown بـ Alpine.js)
+    // ==========================================================
+    'select' => [
+        'max_height'  => '16rem', // ارتفاع أقصى للائحة مع تمرير (scroll) تلقائي
+        'z_index'     => 50,      // z-index لوحة الاختيار (عدّلها إذا تعارضت مع navbar/modal فمشروعك)
+        'default_set' => null,    // مجموعة الأيقونات الافتراضية للـ select؛ null = تتبع status-kit-icons.default_set
+    ],
+
 ];

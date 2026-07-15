@@ -1,5 +1,36 @@
 # Changelog
 
+## v1.1.0 (غير منشور بعد)
+
+### ميزات جديدة
+
+- **`<x-status-select>` جديد**: قائمة اختيار مخصصة (Custom Dropdown) بـ Alpine.js، تعرض أيقونة + نقطة لون + تسمية لكل خيار. تدعم: بحث اختياري (`searchable`)، تنقل بالكيبورد (↑↓ Enter Escape)، `wire:model`/`wire:model.live` (Livewire)، `disabled`, `size` (sm/md/lg)، RTL و Dark mode تلقائيًا (بلا أي تعديل إضافي).
+- إعدادات جديدة `config/status-kit-theme.php['select']` (`max_height`, `z_index`, `default_set`).
+
+### ملاحظات توافق
+- **إضافة متوافقة رجوعيًا بالكامل (Minor)** — بلا أي تغيير على `StatusManager`/`StatusResult`/API الحالي. يتطلب Alpine.js (متوفر تلقائيًا مع Livewire 3) و Bootstrap Icons لسهم/علامة الاختيار الثابتين فـ واجهة الـ Select.
+
+راجع v1.0.6 أدناه لتصحيحات سبقت هاذ الإصدار.
+
+---
+
+## v1.0.6 (غير منشور بعد)
+
+### إصلاحات (Bugs)
+
+- **مفاتيح مكررة فـ `lang/ar/statuses.php`**: `featured`, `deprecated`, `archived` كانوا مكررين جوّا نفس `general`. تمت إزالة التكرار (القيمة الأولى فقط بقيت).
+- **مفاتيح يتيمة `enabled`/`disabled`** فـ `lang/ar/statuses.php` (بلا أي مقابل فـ config، ومعناها متطابق مع `enable`/`disable` الموجودين) — تمت إزالتها.
+- **11 حالة كانت لها ترجمة فـ AR بلا أي تعريف فـ `config/statuses.php`** (`beta`, `deprecated`, `archived`, `delete`, `locked`, `unlocked`, `pending`, `approved`, `rejected`, `highlighted`, `trending`): أُكملت بالكامل (variant/color/hex/icon) بدل ما تبقى معطلة.
+- **أيقونات ناقصة** لـ 7 حالات جديدة (`beta`, `deprecated`, `archived`, `locked`, `unlocked`, `highlighted`, `trending`) عبر fa/bi/ion/heroicon.
+- **عدم تطابق الترجمة بين اللغات**: EN كانت ناقصة 5 مفاتيح (`pending`, `approved`, `rejected`, `highlighted`, `trending`)، FR كانت ناقصة 13 مفتاح. الآن الثلاث لغات (AR/EN/FR) مطابقة **حرفيًا 1:1** مع مفاتيح `config/statuses.php['general']` (73 حالة، بلا نقص وبلا زوائد وبلا تكرار).
+- **حذف الكود الميت** `src/View/Components/StatusBadge.php` (رجع من نسخة سابقة، بلا أي تسجيل فـ ServiceProvider).
+
+### تحسينات
+
+- زيد `.gitattributes` لفرض `LF` على كل ملفات النص، لتفادي تضارب CRLF/LF المستقبلي بين المحررين المختلفين (Windows/Linux).
+
+---
+
 ## v1.0.2 (غير منشور بعد)
 
 ### إصلاحات (Bugs)

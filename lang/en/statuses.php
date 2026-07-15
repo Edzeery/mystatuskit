@@ -150,5 +150,10 @@ return [
         'volume-mute' => 'Mute',
         'play-circle' => 'Play',
         'pause-circle' => 'Pause',
+        'pending' => 'Pending',
+        'approved' => 'Approved',
+        'rejected' => 'Rejected',
+        'highlighted' => 'Highlighted',
+        'trending' => 'Trending',
     ],
 ];
