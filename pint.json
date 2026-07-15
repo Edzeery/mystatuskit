@@ -1,0 +1,9 @@
+{
+    "preset": "laravel",
+    "rules": [],
+    "exclude": [
+        "vendor",
+        "node_modules",
+        "tests"
+    ]
+}

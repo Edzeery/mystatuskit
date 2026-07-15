@@ -1,14 +1,38 @@
 # Changelog
 
-## v1.1.0  
+## v1.1.1
+
+### إصلاحات (Bug Fixes)
+
+- **حذف `src/View/Components/StatusBadge.php`** — كلاس dead code لم يُسجَّل في ServiceProvider أبداً (لم يُحذف فعلياً في v1.0.2 كما ورد في CHANGELOG).
+- **إصلاح PHPDoc في `StatusManager::for()`** — حُذف `@throws InvalidArgumentException` الوهمي لأن الدالة لا ترمي Exception أبداً而是 تعيد `general.gray` كبديل.
+- **حذف ملفات `lang/*.json`** — ملفات ترجمات Breeze/Jetstream عامة لا علاقة لها بالمكتبة (كانت تُسبب تعارضاً مع ترجمات المشروع).
 
 ### ميزات جديدة
 
-- **`<x-status-select>` جديد**: قائمة اختيار مخصصة (Custom Dropdown) بـ Alpine.js، تعرض أيقونة + نقطة لون + تسمية لكل خيار. تدعم: بحث اختياري (`searchable`)، تنقل بالكيبورد (↑↓ Enter Escape)، `wire:model`/`wire:model.live` (Livewire)، `disabled`, `size` (sm/md/lg)، RTL و Dark mode تلقائيًا (بلا أي تعديل إضافي).
+- **اختبارات PHPUnit شاملة** — 6 ملفات اختبار (>50 اختبار) تغطي StatusManager, StatusResult, IconManager, Helpers, ServiceProvider, AssetsRenderer.
+- **`<x-status-select>` يدعم Bootstrap + Tailwind** — الكلاسات CSS أصبحت ديناميكية حسب `config('status-kit-theme.default_framework')`. يعمل مع أي من الفريمووركين بدون تعديل.
+- **ملفات Heroicons SVG مكتملة** — أُضيفت ~20 ملف SVG ناقصة (play, pause, stop, backward, forward, eye, heart, flag, bolt, fire, star, key, link, question-mark-circle, shopping-cart, photo, folder-open, document-arrow-down, paper-airplane, speaker-wave, speaker-x-mark, archive-box, hand-thumb-up, plus, minus, toggle-on, toggle-off, check-badge, map-pin).
+- **PHPStan (Level 5)** — فحص Static Analysis لضمان جودة الكود.
+- **Laravel Pint** — تنسيق الكود تلقائياً.
+- **GitHub Actions CI** — اختبارات تلقائية عند كل push (PHP 8.1-8.3 × Laravel 10-12).
+- **`.gitattributes` محسّن** — ملفات التطوير (tests, phpstan, pint, .github) لا تُنشر مع الحزمة عبر `composer install`.
+
+### تحسينات
+
+- **README شامل ومفصّل** — جدول محتويات، جدول Props كامل، أمثلة لكل مكوّن، قسم استكشاف أخطاء محسّن، قسم اختبارات.
+
+---
+
+## v1.1.0
+
+### ميزات جديدة
+
+- **`<x-status-select>` جديد**: قائمة اختيار مخصصة (Custom Dropdown) بـ Alpine.js، تعرض أيقونة + نقطة لون + تسمية لكل خيار. تدعم: بحث اختياري (`searchable`)، تنقل بالكيبورد (↑↓ Enter Escape)، `wire:model`/`wire:model.live` (Livewire)، `disabled`، `size` (sm/md/lg)، RTL و Dark mode تلقائيًا (بلا أي تعديل إضافي).
 - إعدادات جديدة `config/status-kit-theme.php['select']` (`max_height`, `z_index`, `default_set`).
 
 ### ملاحظات توافق
-- **إضافة متوافقة رجوعيًا بالكامل (Minor)** — بلا أي تغيير على `StatusManager`/`StatusResult`/API الحالي. يتطلب Alpine.js (متوفر تلقائيًا مع Livewire 3) و Bootstrap Icons لسهم/علامة الاختيار الثابتين فـ واجهة الـ Select.
+- **إضافة متوافقة رجوعيًا بالكامل (Minor)** — بلا أي تعديل على `StatusManager`/`StatusResult`/API الحالي. يتطلب Alpine.js (متوفر تلقائيًا مع Livewire 3) و Bootstrap Icons لسهم/علامة الاختيار الثابتين فـ واجهة الـ Select.
 
 راجع v1.0.6 أدناه لتصحيحات سبقت هاذ الإصدار.
 
@@ -31,7 +55,7 @@
 
 ---
 
-## v1.0.2 
+## v1.0.2
 
 ### إصلاحات (Bugs)
 

@@ -11,10 +11,6 @@
 ])
 
 @php
-    /**
-     * كل بيانات الأيقونات/الألوان/التسميات تُبنى هنا سيرفر-سايد (مصدرها config/statuses.php
-     * الموثوق به، مو مدخلات مستخدم)، وتُمرَّر لـ Alpine عبر @js() لعرضها بـ x-html بأمان.
-     */
     $statusManager = app(\Edzeery\MyStatusKit\StatusManager::class);
     $items = $statusManager->domain($domain);
 
@@ -29,6 +25,9 @@
         'hex'   => $result->hex(),
     ])->values()->all();
 
+    $framework = config('status-kit-theme.default_framework', 'bootstrap');
+    $classes = config("status-kit-theme.select_classes.{$framework}", config('status-kit-theme.select_classes.bootstrap'));
+
     $placeholderText = $placeholder ?? match (app()->getLocale()) {
         'ar'    => 'اختر...',
         'fr'    => 'Choisir...',
@@ -38,23 +37,17 @@
     $maxHeight = config('status-kit-theme.select.max_height', '16rem');
     $zIndex    = config('status-kit-theme.select.z_index', 50);
     $uid       = 'status-select-' . \Illuminate\Support\Str::random(8);
+
+    $triggerClass = $size === 'sm'
+        ? $classes['trigger_sm']
+        : ($size === 'lg' ? $classes['trigger_lg'] : $classes['trigger']);
 @endphp
 
 @once
     <style>
-        .status-select-trigger {
-            background-color: var(--bs-body-bg);
-            border: 1px solid var(--bs-border-color);
-            border-radius: var(--bs-border-radius);
-            padding: .375rem .75rem;
-            color: var(--bs-body-color);
-            cursor: pointer;
-            width: 100%;
-            text-align: start;
-        }
+        .status-select { position: relative; }
+        .status-select-trigger { cursor: pointer; width: 100%; text-align: start; }
         .status-select-trigger.is-disabled { opacity: .6; cursor: not-allowed; pointer-events: none; }
-        .status-select-trigger.size-sm { padding: .25rem .5rem; font-size: .875rem; }
-        .status-select-trigger.size-lg { padding: .5rem 1rem; font-size: 1.125rem; }
         .status-select-trigger .status-select-chevron { transition: transform .15s ease; }
         .status-select-trigger .status-select-chevron.rotate-180 { transform: rotate(180deg); }
         .status-select-icon svg { width: 1.1em; height: 1.1em; vertical-align: -0.15em; }
@@ -64,9 +57,9 @@
             inset-inline-start: 0;
             top: calc(100% + .25rem);
             min-width: 100%;
-            background-color: var(--bs-body-bg);
-            border: 1px solid var(--bs-border-color);
-            border-radius: var(--bs-border-radius);
+            background-color: var(--bs-body-bg, #fff);
+            border: 1px solid var(--bs-border-color, #dee2e6);
+            border-radius: var(--bs-border-radius, .375rem);
             box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .15);
             overflow-y: auto;
             padding: .35rem;
@@ -81,17 +74,17 @@
             align-items: center;
             gap: .5rem;
             padding: .4rem .55rem;
-            border-radius: calc(var(--bs-border-radius) - 2px);
+            border-radius: calc(var(--bs-border-radius, .375rem) - 2px);
             cursor: pointer;
         }
         .status-select-option.is-highlighted,
-        .status-select-option:hover { background-color: var(--bs-tertiary-bg); }
+        .status-select-option:hover { background-color: var(--bs-tertiary-bg, #f8f9fa); }
         .status-select-option.is-selected { font-weight: 600; }
     </style>
 @endonce
 
 <div
-    {{ $attributes->whereDoesntStartWith('wire:model')->merge(['class' => trim("status-select position-relative $class")]) }}
+    {{ $attributes->whereDoesntStartWith('wire:model')->merge(['class' => trim("status-select $class")]) }}
     x-data="{
         open: false,
         highlighted: -1,
@@ -148,7 +141,7 @@
     <button
         type="button"
         id="{{ $uid }}-trigger"
-        class="status-select-trigger size-{{ $size }} d-flex align-items-center justify-content-between"
+        class="status-select-trigger {{ $triggerClass }}"
         :class="{ 'is-disabled': disabled }"
         @if($disabled) disabled @endif
         role="combobox"
@@ -161,13 +154,13 @@
         @keydown.enter.prevent="open ? selectHighlighted() : toggle()"
         @keydown.escape="open = false"
     >
-        <span class="d-inline-flex align-items-center gap-2 overflow-hidden">
+        <span class="{{ $classes['gap_small'] }} {{ $classes['overflow'] }} d-inline-flex align-items-center">
             <template x-if="current">
                 <span class="status-select-icon" x-html="current.icon"></span>
             </template>
-            <span class="text-truncate" :class="{ 'text-body-secondary': ! current }" x-text="current ? current.label : placeholder"></span>
+            <span class="{{ $classes['text_truncate'] }}" :class="{ '{{ $classes['text_muted'] }}': ! current }" x-text="current ? current.label : placeholder"></span>
         </span>
-        <i class="bi bi-chevron-down status-select-chevron small ms-2" :class="{ 'rotate-180': open }"></i>
+        <i class="bi bi-chevron-down status-select-chevron {{ $classes['small'] }} {{ $classes['ms_2'] }}" :class="{ 'rotate-180': open }"></i>
     </button>
 
     <ul
@@ -175,16 +168,16 @@
         x-cloak
         id="{{ $uid }}-listbox"
         role="listbox"
-        class="status-select-menu list-unstyled mb-0"
+        class="status-select-menu {{ $classes['menu'] }}"
         style="max-height: {{ $maxHeight }}; z-index: {{ $zIndex }};"
     >
         @if($searchable)
-            <li class="px-1 pb-2">
+            <li class="{{ $classes['p_1_pb_2'] }}">
                 <input
                     type="text"
                     x-model="query"
                     @click.stop
-                    class="form-control form-control-sm"
+                    class="{{ $classes['input'] }}"
                     placeholder="{{ app()->getLocale() === 'ar' ? 'بحث...' : (app()->getLocale() === 'fr' ? 'Rechercher...' : 'Search...') }}"
                 >
             </li>
@@ -193,7 +186,7 @@
         <template x-for="(opt, idx) in filteredOptions" :key="opt.value">
             <li
                 role="option"
-                class="status-select-option"
+                class="status-select-option {{ $classes['option'] }}"
                 :class="{ 'is-highlighted': highlighted === idx, 'is-selected': opt.value === selected }"
                 :aria-selected="opt.value === selected"
                 @click="select(opt.value)"
@@ -201,12 +194,12 @@
             >
                 <span class="status-select-dot" :style="`background-color:${opt.hex}`"></span>
                 <span class="status-select-icon" x-html="opt.icon"></span>
-                <span class="flex-grow-1" x-text="opt.label"></span>
-                <i class="bi bi-check-lg" x-show="opt.value === selected"></i>
+                <span class="{{ $classes['flex_grow'] }}" x-text="opt.label"></span>
+                <i class="{{ $classes['check_icon'] }}" x-show="opt.value === selected"></i>
             </li>
         </template>
 
-        <li x-show="filteredOptions.length === 0" class="text-body-secondary small px-2 py-1">
+        <li x-show="filteredOptions.length === 0" class="{{ $classes['text_muted'] }} {{ $classes['small'] }} {{ $classes['px_2_py_1'] }}">
             {{ app()->getLocale() === 'ar' ? 'لا توجد نتائج' : (app()->getLocale() === 'fr' ? 'Aucun résultat' : 'No results') }}
         </li>
     </ul>

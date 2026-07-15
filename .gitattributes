@@ -1,7 +1,15 @@
-# تطبيع نهايات الأسطر تلقائيًا (LF) لكل ملفات النص، بغض النظر عن نظام التشغيل/المحرر
 * text=auto eol=lf
 
-# ملفات ثنائية — بلا أي تحويل
 *.png binary
 *.jpg binary
 *.svg text eol=lf
+
+# Do not include these files when exporting the package
+/.github export-ignore
+/tests export-ignore
+/phpunit.xml export-ignore
+/phpstan.neon export-ignore
+/pint.json export-ignore
+/.phpstan-cache export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore

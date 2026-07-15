@@ -2,7 +2,6 @@
 
 namespace Edzeery\MyStatusKit;
 
-use InvalidArgumentException;
 use Edzeery\MyStatusKit\DTO\StatusResult;
 
 class StatusManager
@@ -12,9 +11,10 @@ class StatusManager
     /**
      * جلب حالة من نطاق معيّن.
      *
-     * @throws InvalidArgumentException إذا لم توجد الحالة ولا توجد قيمة افتراضية
+     * إذا لم توجد الحالة في config، تُرجع الحالة الافتراضية (general.gray) بدلاً من رمي خطأ.
+     * للاستعلام عن وجود حالة محددة قبل الاستدعاء، استخدم exists().
      */
-    public function for(string $domain, string $status): StatusResult
+    public function for(string $domain, string $status): \Edzeery\MyStatusKit\DTO\StatusResult
     {
         $data = config("status-kit-statuses.{$domain}.{$status}");
 
