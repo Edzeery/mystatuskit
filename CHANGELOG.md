@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.1.3
+
+### إصلاحات (Bug Fixes)
+
+- **إصلاح أحداث Alpine.js في `<x-status-select>`** — `dispatchEvent(new Event('input'))` و `dispatchEvent(new Event('change'))` لم تكن تنتقل (bubble) إلى النافذة (window). تمت إضافة `{ bubbles: true }` لتمكين `@change.window` و `@input.window` في الصفحات الخارجية.
+- **تحديث CDN Ionicons** — تغيير من `unpkg.com` إلى `cdn.jsdelivr.net` لتحسين السرعة والموثوقية (خاصة في منطقة الشرق الأوسط).
+
+---
+
 ## v1.1.2
 
 ### إصلاحات (Bug Fixes)

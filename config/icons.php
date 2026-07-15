@@ -19,8 +19,8 @@ return [
     'cdn' => [
         'fa'  => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
         'bi'  => 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css',
-        'ion' => 'https://unpkg.com/ionicons@7.1.0/dist/ionicons.esm.js', // module script — يُدرج كـ <script type="module">
-        'ion_nomodule' => 'https://unpkg.com/ionicons@7.1.0/dist/ionicons.js',
+        'ion' => 'https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js',
+        'ion_nomodule' => 'https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js',
     ],
 
     // ==========================================================

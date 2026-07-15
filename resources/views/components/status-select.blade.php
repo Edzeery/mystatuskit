@@ -114,8 +114,8 @@
             this.selected = value;
             this.open = false;
             this.$nextTick(() => {
-                this.$refs.hiddenInput.dispatchEvent(new Event('input'));
-                this.$refs.hiddenInput.dispatchEvent(new Event('change'));
+                this.$refs.hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+                this.$refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
             });
         },
         moveHighlight(delta) {
