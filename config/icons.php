@@ -546,6 +546,10 @@ return [
 
         // حالات عامة قابلة لإعادة الاستعمال عبر أي دومين
         'featured' => 'star',
+        'new'         => 'bolt',
+        'popular'     => 'fire',
+        'recommended' => 'hand-thumb-up',
+        'limited'     => 'flag',
         'yes'       => 'check-circle',
         'no'        => 'x-circle',
         'on'        => 'toggle-on',
