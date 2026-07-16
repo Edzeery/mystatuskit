@@ -2,6 +2,7 @@
 
 namespace Edzeery\MyStatusKit\Facades;
 
+use Edzeery\MyStatusKit\IconManager;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string|null svg(string $name, string $classes = '', ?string $subfolder = null)
  * @method static string|null heroicon(string $name, string $classes = '')
  *
- * @see \Edzeery\MyStatusKit\IconManager
+ * @see IconManager
  */
 class Icon extends Facade
 {

@@ -2,6 +2,7 @@
 
 namespace Edzeery\MyStatusKit\Facades;
 
+use Edzeery\MyStatusKit\StatusManager;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array domain(string $domain)
  * @method static bool exists(string $domain, string $status)
  *
- * @see \Edzeery\MyStatusKit\StatusManager
+ * @see StatusManager
  */
 class Status extends Facade
 {

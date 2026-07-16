@@ -9,11 +9,11 @@ class StatusKitServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/icons.php', 'status-kit-icons');
-        $this->mergeConfigFrom(__DIR__ . '/../config/statuses.php', 'status-kit-statuses');
-        $this->mergeConfigFrom(__DIR__ . '/../config/theme.php', 'status-kit-theme');
+        $this->mergeConfigFrom(__DIR__.'/../config/icons.php', 'status-kit-icons');
+        $this->mergeConfigFrom(__DIR__.'/../config/statuses.php', 'status-kit-statuses');
+        $this->mergeConfigFrom(__DIR__.'/../config/theme.php', 'status-kit-theme');
 
-        $this->app->singleton(IconManager::class, fn () => new IconManager());
+        $this->app->singleton(IconManager::class, fn () => new IconManager);
         $this->app->singleton('status-kit-icon', fn ($app) => $app->make(IconManager::class));
 
         $this->app->singleton(StatusManager::class, fn ($app) => new StatusManager($app->make(IconManager::class)));
@@ -24,28 +24,28 @@ class StatusKitServiceProvider extends ServiceProvider
     {
         // نشر الملفات القابلة للتخصيص
         $this->publishes([
-            __DIR__ . '/../config/icons.php'    => config_path('icons.php'),
-            __DIR__ . '/../config/statuses.php' => config_path('statuses.php'),
-            __DIR__ . '/../config/theme.php'    => config_path('status-kit-theme.php'),
+            __DIR__.'/../config/icons.php' => config_path('icons.php'),
+            __DIR__.'/../config/statuses.php' => config_path('statuses.php'),
+            __DIR__.'/../config/theme.php' => config_path('status-kit-theme.php'),
         ], 'status-kit-config');
 
         $this->publishes([
-            __DIR__ . '/../lang' => $this->app->langPath('vendor/status-kit'),
+            __DIR__.'/../lang' => $this->app->langPath('vendor/status-kit'),
         ], 'status-kit-lang');
 
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/status-kit'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/status-kit'),
         ], 'status-kit-views');
 
         $this->publishes([
-            __DIR__ . '/../resources/svg' => resource_path('svg'),
+            __DIR__.'/../resources/svg' => resource_path('svg'),
         ], 'status-kit-svg');
 
         // تحميل المصادر مباشرة (تعمل حتى بدون نشر)
         // ملاحظة: namespace الترجمة "status-kit" لازم يطابق اسم مجلد النشر أعلاه
         // (lang/vendor/status-kit) حتى تُقرأ الترجمات المخصصة تلقائيًا بعد النشر.
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'status-kit');
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'status-kit');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'status-kit');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'status-kit');
 
         // إن قام المستخدم بنشر config/statuses.php أو config/icons.php أو config/status-kit-theme.php
         // محليًا، تُدمج فوق الافتراضي
@@ -69,6 +69,7 @@ class StatusKitServiceProvider extends ServiceProvider
         }
 
         Blade::component('status-kit::components.status-badge', 'status-badge');
+        Blade::component('status-kit::components.status-icon', 'status-icon');
         Blade::component('status-kit::components.status-select', 'status-select');
 
         // @statusKitAssets(['fa','bi']) لإدراج روابط CDN لمكتبات الأيقونات مباشرة

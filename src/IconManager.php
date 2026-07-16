@@ -37,12 +37,13 @@ class IconManager
         $icons = $this->config[$set] ?? [];
         $icon = $icons[$name] ?? $icons['default'] ?? null;
 
-        if (!$icon) {
+        if (! $icon) {
             return '';
         }
 
         if ($set === 'ion') {
             $classAttr = $classes ? " class=\"{$classes}\"" : '';
+
             return "<ion-icon name=\"{$icon}\"{$classAttr} role=\"img\"></ion-icon>";
         }
 
@@ -68,12 +69,12 @@ class IconManager
 
         $paths = array_filter([
             resource_path("svg/{$relative}"),                       // ملف منشور في المشروع
-            __DIR__ . "/../resources/svg/{$relative}",               // fallback من داخل الحزمة نفسها
+            __DIR__."/../resources/svg/{$relative}",               // fallback من داخل الحزمة نفسها
         ]);
 
         $path = collect($paths)->first(fn ($p) => file_exists($p));
 
-        if (!$path) {
+        if (! $path) {
             return null;
         }
 
@@ -81,13 +82,13 @@ class IconManager
 
         // حجم افتراضي معقول (يتبع حجم الخط المحيط) إذا الملف ماعندوش width/height أصلاً.
         // بدون هذا، SVG بلا width/height يرندر بحجمه الطبيعي وقد يبان "كبير جدًا".
-        if (!preg_match('/\swidth\s*=/i', $svg)) {
+        if (! preg_match('/\swidth\s*=/i', $svg)) {
             $defaultSize = config('status-kit-icons.svg_size', '1em');
-            $svg = preg_replace('/<svg/i', '<svg width="' . $defaultSize . '" height="' . $defaultSize . '"', $svg, 1);
+            $svg = preg_replace('/<svg/i', '<svg width="'.$defaultSize.'" height="'.$defaultSize.'"', $svg, 1);
         }
 
         if ($classes) {
-            $svg = preg_replace('/<svg([^>]*)>/i', '<svg$1 class="' . $classes . '">', $svg, 1);
+            $svg = preg_replace('/<svg([^>]*)>/i', '<svg$1 class="'.$classes.'">', $svg, 1);
         }
 
         return $svg;

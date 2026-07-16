@@ -23,7 +23,7 @@ class AssetsRenderer
                 'bi' => isset($cdn['bi']) ? "<link rel=\"stylesheet\" href=\"{$cdn['bi']}\">" : '',
                 'ion' => isset($cdn['ion'])
                     ? "<script type=\"module\" src=\"{$cdn['ion']}\"></script>"
-                    . "<script nomodule src=\"{$cdn['ion_nomodule']}\"></script>"
+                    ."<script nomodule src=\"{$cdn['ion_nomodule']}\"></script>"
                     : '',
                 default => '',
             };

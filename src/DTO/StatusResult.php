@@ -3,28 +3,27 @@
 namespace Edzeery\MyStatusKit\DTO;
 
 use Edzeery\MyStatusKit\IconManager;
+use Illuminate\Support\Str;
 
 class StatusResult
 {
     public function __construct(
         protected string $domain,
         protected string $status,
-        protected array $data,
+        protected array|string $data,
         protected IconManager $iconManager,
     ) {}
 
     /** اسم عام محايد success|warning|danger|info|gray */
     public function variant(): string
     {
-        return $this->data['variant'] ?? 'gray';
+        return $this->resolvedData()['variant'] ?? 'gray';
     }
 
     /**
      * كلاسات الألوان جاهزة للدمج في class="".
      *
      * $framework: 'bootstrap' | 'tailwind' | null (يستعمل config('status-kit-theme.default_framework'))
-     * - bootstrap : كلاس واحد مبني من variant عبر config/theme.php (text-bg-success...). $withDark بلا تأثير هنا.
-     * - tailwind  : كلاسات light/dark اليدوية الموجودة في statuses.php (السلوك القديم قبل v1.0.2).
      */
     public function color(bool $withDark = true, ?string $framework = null): string
     {
@@ -36,35 +35,34 @@ class StatusResult
             return $map[$this->variant()] ?? $map['gray'] ?? 'text-bg-secondary';
         }
 
-        $classes = $this->data['light'] ?? '';
-        if ($withDark && !empty($this->data['dark'])) {
-            $classes .= ' ' . $this->data['dark'];
+        $data = $this->resolvedData();
+        $classes = $data['light'] ?? '';
+        if ($withDark && ! empty($data['dark'])) {
+            $classes .= ' '.$data['dark'];
         }
 
         return trim($classes);
     }
 
-    /** كلاسات Tailwind الفاتحة فقط (متوفرة دومًا بغض النظر عن الframework المختار) */
+    /** كلاسات Tailwind الفاتحة فقط */
     public function lightClass(): string
     {
-        return $this->data['light'] ?? '';
+        return $this->resolvedData()['light'] ?? '';
     }
 
-    /** كلاسات Tailwind الداكنة فقط (متوفرة دومًا بغض النظر عن الframework المختار) */
+    /** كلاسات Tailwind الداكنة فقط */
     public function darkClass(): string
     {
-        return $this->data['dark'] ?? '';
+        return $this->resolvedData()['dark'] ?? '';
     }
 
     public function hex(): string
     {
-        return $this->data['hex'] ?? '#9ca3af';
+        return $this->resolvedData()['hex'] ?? '#9ca3af';
     }
 
     /**
      * التسمية المترجمة حسب اللغة الحالية.
-     * تقرأ من ملفات الحزمة نفسها (lang/{locale}/statuses.php) عبر namespace "status-kit"،
-     * أو من resources/lang/vendor/status-kit/{locale}/statuses.php إذا نُشرت ونُخصصت في المشروع.
      */
     public function label(?string $locale = null): string
     {
@@ -72,28 +70,27 @@ class StatusResult
         $translated = $locale ? __($key, [], $locale) : __($key);
 
         return $translated === $key
-            ? \Illuminate\Support\Str::headline($this->status)
+            ? Str::headline($this->status)
             : $translated;
     }
 
     /** HTML للأيقونة فقط */
     public function icon(?string $set = null, ?string $classes = null): string
     {
-        $iconKey = $this->data['icon'] ?? 'default';
+        $iconKey = $this->resolvedData()['icon'] ?? 'default';
 
         return $this->iconManager->render($iconKey, $set, $classes);
     }
 
     /**
-     * كلاسات عنصر البادج كاملة (أساس الفريموورك + لون + إضافات)، جاهزة للدمج في class="".
-     * يستعملها badge() وأيضًا <x-status-badge> لتفادي تكرار المنطق.
+     * كلاسات عنصر البادج كاملة (أساس الفريموورك + لون + إضافات).
      */
     public function badgeClasses(?string $extraClasses = null, ?string $framework = null): string
     {
         $framework = $framework ?? config('status-kit-theme.default_framework', 'bootstrap');
         $base = config("status-kit-theme.badge_base.{$framework}", '');
 
-        return trim($base . ' ' . $this->color(true, $framework) . ' ' . ($extraClasses ?? ''));
+        return trim($base.' '.$this->color(true, $framework).' '.($extraClasses ?? ''));
     }
 
     /** بادج HTML كامل: أيقونة + تسمية داخل عنصر ملوّن */
@@ -106,8 +103,25 @@ class StatusResult
         return "<span class=\"{$classes}\">{$icon}<span>{$label}</span></span>";
     }
 
+    /** بادج بلا أيقونة — نص + ألوان فقط */
+    public function badgeWithoutIcon(?string $extraClasses = null, ?string $framework = null): string
+    {
+        $classes = $this->badgeClasses($extraClasses, $framework);
+        $label = e($this->label());
+
+        return "<span class=\"{$classes}\"><span>{$label}</span></span>";
+    }
+
+    /** أيقونة فقط — بلا نص وبلا خلفية بادج */
+    public function iconOnly(?string $set = null, ?string $classes = null): string
+    {
+        return $this->icon($set, $classes);
+    }
+
     public function toArray(): array
     {
+        $data = $this->resolvedData();
+
         return [
             'domain'  => $this->domain,
             'status'  => $this->status,
@@ -115,7 +129,26 @@ class StatusResult
             'color'   => $this->color(),
             'hex'     => $this->hex(),
             'label'   => $this->label(),
-            'icon'    => $this->data['icon'] ?? 'default',
+            'icon'    => $data['icon'] ?? 'default',
         ];
+    }
+
+    /**
+     * إرجاع البيانات كمصفوفة مُحلّاة (يحل مشكلة string data من _shared).
+     */
+    private function resolvedData(): array
+    {
+        if (is_array($this->data)) {
+            return $this->data;
+        }
+
+        // data = string (اسم من _shared)
+        return config("status-kit-statuses._shared.{$this->data}", [
+            'variant' => 'gray',
+            'light' => 'text-gray-700 bg-gray-100',
+            'dark' => 'dark:text-gray-300 dark:bg-gray-800',
+            'hex' => '#9ca3af',
+            'icon' => 'default',
+        ]);
     }
 }

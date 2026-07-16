@@ -1,5 +1,29 @@
 # Changelog
 
+## v1.1.4
+
+### ميزات جديدة
+
+- **نظام `_shared` لتقليل التكرار** — الحالات المشتركة (active, pending, approved...) تُعرَّف مرة واحدة في `config/statuses.php['_shared']` وتُستعار عبر النطاقات. يمكن استدعاؤها كـ `string` (بلا تعديل) أو `array` مع icon فقط (تدمج مع _shared).
+- **5 نطاقات مالية جديدة**: `budget` (9 حالات)، `expense` (9 حالات)، `income` (7 حالات)، `transaction` (8 حالات)، `account` (7 حالات).
+- **توسيع نطاق `order`** — 8 حالات شحن/توصيل جديدة: `confirmed`, `preparing`, `shipped`, `delivered`, `returned`, `in_transit`, `on_hold`, `out_for_delivery`.
+- **توسيع نطاق `payment`** — 5 حالات checkout: `checkout_paid`, `checkout_pending`, `checkout_failed`, `checkout_canceled`, `checkout_expired`.
+- **توسيع نطاق `general`** — 55+ حالة جديدة تشمل: حالات البيع (paid, unpaid, partially_paid...)، حالات الشحن (shipped, delivered, in_transit...)، حالات الاشتراك (renewed, upgraded, downgraded...)، حالات الوسائط (play, pause, stop...)، حالات الدورة حياة (beta, deprecated, archived...)، وأيقونات عامة (yes/no, on/off, save, add, remove...).
+- **مكوّن `<x-status-icon>` جديد** — عرض الأيقونة فقط (بدون نص وبلا خلفية). يدعم `set` و `class`.
+- **دعم خاصية `icon` في `<x-status-badge>`** — يمكن إخفاء الأيقونة بتمرير `:icon="false"`.
+- **`StatusResult::badgeWithoutIcon()`** — بادج بلا أيقونة (نص + ألوان فقط).
+- **`StatusResult::iconOnly()`** — أيقونة فقط كـ HTML.
+
+### تحسينات
+
+- **إصلاح `general.inactive`** — كان `variant: danger` بالخطأ، أصبح `variant: gray`.
+- **إصلاح `general.danger`** — كان يستعمل `icon: failed`، أصبح أكثر دقة.
+- **إضافة أيقونات جديدة** في `config/icons.php` لـ 60+ حالة عبر 4 مجموعات (fa, bi, ion, heroicon).
+- **ترجمات كاملة** لـ 3 لغات (ar, en, fr) تشمل كل الحالات الجديدة.
+- **تحسين `StatusResult::resolvedData()`** — يحل تلقائيًا مشكلة البيانات كـ string من `_shared`.
+
+---
+
 ## v1.1.3
 
 ### إصلاحات (Bug Fixes)

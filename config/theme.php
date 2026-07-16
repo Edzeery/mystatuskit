@@ -22,9 +22,9 @@ return [
     'bootstrap_variants' => [
         'success' => 'text-bg-success',
         'warning' => 'text-bg-warning',
-        'danger'  => 'text-bg-danger',
-        'info'    => 'text-bg-info',
-        'gray'    => 'text-bg-secondary',
+        'danger' => 'text-bg-danger',
+        'info' => 'text-bg-info',
+        'gray' => 'text-bg-secondary',
     ],
 
     // ==========================================================
@@ -32,7 +32,7 @@ return [
     // ==========================================================
     'badge_base' => [
         'bootstrap' => 'badge d-inline-flex align-items-center gap-1',
-        'tailwind'  => 'status-badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
+        'tailwind' => 'status-badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
     ],
 
     // ==========================================================
@@ -40,46 +40,46 @@ return [
     // ==========================================================
     'select_classes' => [
         'bootstrap' => [
-            'container'     => '',
-            'trigger'       => 'form-control d-flex align-items-center justify-content-between',
-            'trigger_sm'    => 'form-control form-control-sm d-flex align-items-center justify-content-between',
-            'trigger_lg'    => 'form-control d-flex align-items-center justify-content-between',
-            'input'         => 'form-control form-control-sm',
-            'menu'          => 'list-unstyled mb-0',
-            'option'        => 'd-flex align-items-center gap-2',
+            'container' => '',
+            'trigger' => 'form-control d-flex align-items-center justify-content-between',
+            'trigger_sm' => 'form-control form-control-sm d-flex align-items-center justify-content-between',
+            'trigger_lg' => 'form-control d-flex align-items-center justify-content-between',
+            'input' => 'form-control form-control-sm',
+            'menu' => 'list-unstyled mb-0',
+            'option' => 'd-flex align-items-center gap-2',
             'text_truncate' => 'text-truncate',
-            'text_muted'    => 'text-body-secondary',
-            'check_icon'    => 'bi bi-check-lg',
-            'hidden_input'  => '',
-            'overflow'      => 'overflow-hidden',
-            'gap_small'     => 'gap-2',
-            'p_1_pb_2'      => 'px-1 pb-2',
-            'px_2_py_1'     => 'px-2 py-1',
-            'small'         => 'small',
-            'ms_2'          => 'ms-2',
-            'mb_0'          => 'mb-0',
-            'flex_grow'     => 'flex-grow-1',
+            'text_muted' => 'text-body-secondary',
+            'check_icon' => 'bi bi-check-lg',
+            'hidden_input' => '',
+            'overflow' => 'overflow-hidden',
+            'gap_small' => 'gap-2',
+            'p_1_pb_2' => 'px-1 pb-2',
+            'px_2_py_1' => 'px-2 py-1',
+            'small' => 'small',
+            'ms_2' => 'ms-2',
+            'mb_0' => 'mb-0',
+            'flex_grow' => 'flex-grow-1',
         ],
         'tailwind' => [
-            'container'     => '',
-            'trigger'       => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-gray-100',
-            'trigger_sm'    => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-xs text-gray-900 dark:text-gray-100',
-            'trigger_lg'    => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100',
-            'input'         => 'w-full border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
-            'menu'          => 'list-none mb-0',
-            'option'        => 'flex items-center gap-2',
+            'container' => '',
+            'trigger' => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-gray-100',
+            'trigger_sm' => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-xs text-gray-900 dark:text-gray-100',
+            'trigger_lg' => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100',
+            'input' => 'w-full border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
+            'menu' => 'list-none mb-0',
+            'option' => 'flex items-center gap-2',
             'text_truncate' => 'truncate',
-            'text_muted'    => 'text-gray-400 dark:text-gray-500',
-            'check_icon'    => 'bi bi-check-lg',
-            'hidden_input'  => '',
-            'overflow'      => 'overflow-hidden',
-            'gap_small'     => 'gap-2',
-            'p_1_pb_2'      => 'px-1 pb-2',
-            'px_2_py_1'     => 'px-2 py-1',
-            'small'         => 'text-xs',
-            'ms_2'          => 'ms-2',
-            'mb_0'          => 'mb-0',
-            'flex_grow'     => 'flex-grow-1',
+            'text_muted' => 'text-gray-400 dark:text-gray-500',
+            'check_icon' => 'bi bi-check-lg',
+            'hidden_input' => '',
+            'overflow' => 'overflow-hidden',
+            'gap_small' => 'gap-2',
+            'p_1_pb_2' => 'px-1 pb-2',
+            'px_2_py_1' => 'px-2 py-1',
+            'small' => 'text-xs',
+            'ms_2' => 'ms-2',
+            'mb_0' => 'mb-0',
+            'flex_grow' => 'flex-grow-1',
         ],
     ],
 
@@ -87,8 +87,8 @@ return [
     // إعدادات مكوّن <x-status-select> (Custom Dropdown بـ Alpine.js)
     // ==========================================================
     'select' => [
-        'max_height'  => '16rem', // ارتفاع أقصى للائحة مع تمرير (scroll) تلقائي
-        'z_index'     => 50,      // z-index لوحة الاختيار (عدّلها إذا تعارضت مع navbar/modal فمشروعك)
+        'max_height' => '16rem', // ارتفاع أقصى للائحة مع تمرير (scroll) تلقائي
+        'z_index' => 50,      // z-index لوحة الاختيار (عدّلها إذا تعارضت مع navbar/modal فمشروعك)
         'default_set' => null,    // مجموعة الأيقونات الافتراضية للـ select؛ null = تتبع status-kit-icons.default_set
     ],
 
