@@ -1,5 +1,6 @@
 {
     "name": "edzeery/mystatuskit",
+    "version": "1.2.0",
     "description": "مكتبة موحّدة لإدارة ألوان وأيقونات الحالات (Status Colors & Icons) في مشاريع Laravel، بدون اعتماد على Filament أو أي حزمة UI خارجية.",
     "type": "library",
     "license": "MIT",
