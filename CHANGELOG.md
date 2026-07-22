@@ -1,5 +1,85 @@
 # Changelog
 
+## v1.2.0
+
+### ميزات جديدة
+
+- **`StatusResult::is()` / `isOneOf()` / `inDomain()`** — طرق سريعة للتحقق من حالة واحدة أو عدة حالات أو النطاق الحالي:
+  ```php
+  Status::for('payment', 'paid')->is('paid');           // true
+  Status::for('payment', 'paid')->isOneOf(['paid','completed']); // true
+  Status::for('payment', 'paid')->inDomain('payment');  // true
+  ```
+- **`StatusResult implements \Stringable`** — يمكن طباعة الكائن مباشرة `echo Status::for('payment','paid');` ليعيد التسمية.
+- **`StatusResult implements \JsonSerializable`** — `json_encode(Status::for('payment','paid'))` يُرجع مصفوفة كاملة تلقائيًا.
+- **`StatusManager::domains()`** — جلب قائمة بأسماء كل النطاقات المعرّفة.
+- **`StatusManager::register()` / `registerMany()`** — تسجيل حالات جديدة أثناء التشغيل:
+  ```php
+  Status::register('custom', 'new_status', [
+      'variant' => 'info', 'hex' => '#2563eb',
+  ]);
+  Status::registerMany('custom', ['s1' => [...], 's2' => [...]]);
+  ```
+- **`StatusCast` Eloquent Cast** — يحوّل قاعدة البيانات تلقائيًا إلى كائن `StatusResult`:
+  ```php
+  // في Model
+  protected $casts = ['status' => \Edzeery\MyStatusKit\Casts\StatusCast::class . ':payment'];
+  ```
+- **مكوّن `<x-status-dot>`** — نقطة لونية صغيرة (بدون نص) بحجم `sm` / `md` / `lg`:
+  ```blade
+  <x-status-dot domain="payment" status="paid" size="sm" />
+  ```
+- **مكوّن `<x-status-progress>`** — شريط تقدم ملوّن يعرض نسبة مئوية مع ARIA progressbar:
+  ```blade
+  <x-status-progress domain="payment" status="paid" value="75" size="md" />
+  ```
+- **مكوّن `<x-status-badge-wire>`** — بادجLivewire متوافق يدعم `wire:model` مع `wire:ignore.self`:
+  ```blade
+  <x-status-badge-wire domain="payment" status="paid" set="fa" />
+  ```
+- **Blade Directives** — تعليمات بريد جديدة لتكرار الحالات:
+  ```blade
+  @statusFor('payment')
+      <span>{{ $statusResult->label() }}</span>
+  @endStatusFor
+  ```
+- **Helper جديدة**: `status_exists()`, `status_domain()`, `status_domains()`.
+- **`heroicon_dir` config** — مسار مخصص لملفات SVG بديلة عن `resources/svg/heroicons`.
+
+### تحسينات أداء
+
+- **`$resolvedCache` في `StatusResult`** — بيانات الحالة تُحل مرة واحدة وتُخزّن مؤقتًا (تقليل استدعاءات config).
+- **`$svgCache` في `IconManager`** — ملفات SVG تُقرأ من القرص مرة واحدة وتُحفظ في الذاكرة.
+
+### تحسينات أمان
+
+- **Escape XSS** — أسماء الأيقونات والكلاسات تمر عبر `e()` في `IconManager::render()` و `svg()`.
+- ** تنظيف SVG** — حذف `<script>` و `on*` handlers من ملفات SVG المضمّنة.
+- **SRI Hashes** — روابط CDN تتضمن `integrity` + `crossorigin` (FA 6.5.2, BI 1.11.3).
+- **Unknown icon fallback** — أيقونة غير معروفة تُرجع تعليق HTML `<!-- status-kit: unknown icon "..." -->` بدلاً من سلسلة فارغة.
+
+### جودة الكود
+
+- **`FALLBACK` constant** مشترك بين `StatusManager` و `StatusResult`.
+- **`isPartialOverride()`** أصبح يتحقق من مفتاح `variant` (وليس `light`/`dark`).
+- **ServiceProvider** استُخرجت `registerBladeComponents()` مع `mergePublishedConfigs()`.
+- **PHPDoc شامل** — جميع الدوال العامة في `StatusManager` و `IconManager` تحتوي وصفًا كاملًا بالإنجليزية.
+- **`getIconHtml()` deprecated** — يُنصح بـ `icon()` بدلاً منها.
+
+### اختبارات
+
+- **109 اختبار / 234 تأكيد** — إضافة 16 اختبار حالات حدية (edge cases): حالات غير موجودة، ترجمات متعددة اللغات، `__toString`, `JsonSerializable`, `toArray`, وmuch more.
+
+---
+
+## v1.1.5
+
+### إصلاحات (Bug Fixes)
+
+- **إصلاح تكرار الكود** — تم تقسيم `StatusManager::resolveData()` إلى دالة `resolveData()` مستقلة.
+
+---
+
 ## v1.1.4
 
 ### ميزات جديدة
@@ -48,7 +128,7 @@
 ### إصلاحات (Bug Fixes)
 
 - **حذف `src/View/Components/StatusBadge.php`** — كلاس dead code لم يُسجَّل في ServiceProvider أبداً (لم يُحذف فعلياً في v1.0.2 كما ورد في CHANGELOG).
-- **إصلاح PHPDoc في `StatusManager::for()`** — حُذف `@throws InvalidArgumentException` الوهمي لأن الدالة لا ترمي Exception أبداً而是 تعيد `general.gray` كبديل.
+- **إصلاح PHPDoc في `StatusManager::for()`** — حُذف `@throws InvalidArgumentException` الوهمي لأن الدالة لا ترمي Exception أبداً بل تعيد `general.gray` كبديل.
 - **حذف ملفات `lang/*.json`** — ملفات ترجمات Breeze/Jetstream عامة لا علاقة لها بالمكتبة (كانت تُسبب تعارضاً مع ترجمات المشروع).
 
 ### ميزات جديدة

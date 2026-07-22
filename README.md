@@ -12,9 +12,9 @@
 - **90+ حالة جاهزة** عبر 10 نطاقات (domains): `payment`, `subscription`, `user`, `stores`, `order`, `product`, `role`, `invoice`, `notification`, `general`
 - **5 مجموعات أيقونات**: FontAwesome, Bootstrap Icons, Ionicons, Heroicons (SVG مضمّن), SVG مخصص
 - **فريمووركان للألوان**: Bootstrap 5 و Tailwind CSS — مع سهولة التبديل
-- **Blade Components**: `<x-status-badge>` و `<x-status-select>` (Alpine.js)
+- **Blade Components**: `<x-status-badge>`, `<x-status-dot>`, `<x-status-icon>`, `<x-status-select>` (Alpine.js), `<x-status-progress>`, `<x-status-badge-wire>` (Livewire)
 - **متوافق مع**: PHP 8.1+ / Laravel 10, 11, 12, 13
-- **Livewire 3**: `<x-status-select>` يدعم `wire:model` و `wire:model.live`
+- **Livewire 3**: `<x-status-select>` و `<x-status-badge-wire>` يدعمان `wire:model` و `wire:model.live`
 
 ---
 
@@ -47,7 +47,7 @@ composer require edzeery/mystatuskit
 
 > **ملاحظة:** إذا أردت تقييد نسخة معينة:
 > ```bash
-> composer require edzeery/mystatuskit:^1.1
+> composer require edzeery/mystatuskit:^1.2
 > ```
 
 ### البديل: مستودع VCS من GitHub
@@ -63,7 +63,7 @@ composer require edzeery/mystatuskit
         }
     ],
     "require": {
-        "edzeery/mystatuskit": "^1.1"
+        "edzeery/mystatuskit": "^1.2"
     }
 }
 ```
@@ -203,6 +203,23 @@ Status::domain('payment');  // ['paid' => StatusResult, 'pending' => StatusResul
 // التحقق من وجود حالة
 Status::exists('payment', 'paid');      // true
 Status::exists('payment', 'nonexistent'); // false
+
+// جلب كل النطاقات
+Status::domains(); // ['payment', 'subscription', 'user', ...]
+
+// تسجيل حالات جديدة أثناء التشغيل
+Status::register('custom', 'new_status', [
+    'variant' => 'info', 'hex' => '#2563eb', 'icon' => 'info',
+]);
+Status::registerMany('custom', ['s1' => [...], 's2' => [...]]);
+
+// التحقق من الحالة الحالية
+$result = Status::for('payment', 'paid');
+$result->is('paid');                            // true
+$result->isOneOf(['paid', 'completed']);         // true
+$result->inDomain('payment');                    // true
+echo $result;                                    // "مدفوع" (Stringable)
+json_encode($result);                            // {"domain":"payment","status":"paid",...} (JsonSerializable)
 ```
 
 ### 4.2 Helpers (متوافقة مع المكتبة القديمة)
@@ -217,8 +234,12 @@ status_badge('payment', 'paid');               // HTML بادج كامل
 
 icon('paid', 'fa', 'text-lg');                 // أيقونة فقط
 svg_icon('custom-logo', 'w-6 h-6');            // SVG من resources/svg
-getIconHtml('paid');                            // متوافقة مع النسخة القديمة
+getIconHtml('paid');                            // متوافقة مع النسخة القديمة (deprecated)
 status_kit_assets(['fa', 'ion']);               // إدراج CDN
+status_exists('payment', 'paid');               // true
+status_domain('payment');                       // ['paid' => StatusResult, ...]
+status_domains();                               // ['payment', 'subscription', ...]
+status('payment', 'paid');                      // كائن StatusResult كامل
 ```
 
 ### 4.3 Blade Component — البادج
@@ -226,7 +247,7 @@ status_kit_assets(['fa', 'ion']);               // إدراج CDN
 ```blade
 <x-status-badge domain="payment" status="paid" set="fa" />
 <x-status-badge domain="user" status="banned" set="heroicon" class="text-sm" />
-<x-status-badge domain="general" status="featured" set="fa" />
+<x-status-badge domain="general" status="featured" set="fa" :icon="false" />
 ```
 
 **Props:**
@@ -236,9 +257,66 @@ status_kit_assets(['fa', 'ion']);               // إدراج CDN
 | `domain` | string | **إجباري** | نطاق الحالة (payment, user, general...) |
 | `status` | string | **إجباري** | اسم الحالة (paid, active, banned...) |
 | `set` | string | null | مجموعة الأيقونات (fa/bi/ion/heroicon/svg) |
+| `icon` | bool | true | إظهار/إخفاء الأيقونة |
 | `class` | string | '' | كلاسات CSS إضافية |
 
-### 4.4 Blade Component — القائمة المخصصة (Select)
+### 4.4 Blade Component — النقطة اللونية (Dot)
+
+نقطة لونية صغيرة بدون نص، مناسبة للقوائم والجداول:
+
+```blade
+<x-status-dot domain="payment" status="paid" />
+<x-status-dot domain="user" status="active" size="lg" />
+<x-status-dot domain="order" status="pending" size="sm" />
+```
+
+**Props:**
+
+| Prop | النوع | الافتراضي | الوصف |
+|---|---|---|---|
+| `domain` | string | **إجباري** | نطاق الحالة |
+| `status` | string | **إجباري** | اسم الحالة |
+| `size` | string | 'md' | الحجم: `sm` / `md` / `lg` |
+| `class` | string | '' | كلاسات CSS إضافية |
+
+### 4.5 Blade Component — الأيقونة فقط (Icon)
+
+```blade
+<x-status-icon domain="payment" status="paid" set="bi" />
+<x-status-icon domain="role" status="admin" set="heroicon" class="w-5 h-5" />
+```
+
+### 4.6 Blade Component — شريط التقدم (Progress)
+
+شريط تقدم ملوّن يعرض نسبة مئوية مع دعم ARIA:
+
+```blade
+<x-status-progress domain="payment" status="paid" value="75" />
+<x-status-progress domain="order" status="shipped" value="100" size="lg" />
+<x-status-progress domain="subscription" status="active" value="45" size="sm" :show-label="false" />
+```
+
+**Props:**
+
+| Prop | النوع | الافتراضي | الوصف |
+|---|---|---|---|
+| `domain` | string | **إجباري** | نطاق الحالة |
+| `status` | string | **إجباري** | اسم الحالة |
+| `value` | int | 100 | النسبة المئوية (0-100) |
+| `size` | string | 'md' | الحجم: `sm` / `md` / `lg` |
+| `showLabel` | bool | true | إظهار `sr-only` label |
+| `class` | string | '' | كلاسات CSS إضافية |
+
+### 4.7 Blade Component — البادج Livewire (Badge Wire)
+
+بادجLivewire متوافق مع `wire:model` و `wire:model.live`:
+
+```blade
+<x-status-badge-wire domain="payment" status="paid" set="fa" />
+<x-status-badge-wire domain="subscription" status="active" wire:model.live="subscriptionStatus" />
+```
+
+### 4.9 Blade Component — القائمة المخصصة (Select)
 
 `<x-status-select>` — قائمة اختيار مخصصة مبنية بـ **Alpine.js**، تعرض أيقونة + نقطة لون + تسمية لكل حالة.
 
@@ -291,11 +369,50 @@ status_kit_assets(['fa', 'ion']);               // إدراج CDN
 ],
 ```
 
-### 4.5 الأدوار
+### 4.10 الأدوار
 
 ```php
 Status::for('role', 'super_admin')->badge('heroicon');
 Status::for('role', 'admin')->badge('fa');
+```
+
+### 4.11 Eloquent Cast — StatusCast
+
+تحويل قاعدة البيانات تلقائيًا إلى كائن `StatusResult`:
+
+```php
+use Edzeery\MyStatusKit\Casts\StatusCast;
+
+class Order extends Model
+{
+    protected $casts = [
+        'status' => StatusCast::class . ':payment',
+    ];
+}
+
+// الاستعمال:
+$order = Order::find(1);
+$order->status->label();   // "مدفوع"
+$order->status->hex();     // "#16a34a"
+echo $order->status;       // "مدفوع" (Stringable)
+```
+
+**ملاحظة:** النطاق (`domain`) يُمرر كمعامل إضافي بعد dấu `:` في تعريف الـ Cast.
+
+### 4.12 Blade Directives
+
+```blade
+{{-- تكرار حالات نطاق معين --}}
+@statusFor('payment')
+    <div>{{ $key }}: {{ $statusResult->label() }}</div>
+@endstatusFor
+
+{{-- عرض إحصائيات النطاق --}}
+@statusLegend('payment')
+    @foreach($__statusLegendItems as $key => $result)
+        <span class="badge">{{ $result->label() }}</span>
+    @endforeach
+@endStatusLegend
 ```
 
 ---
@@ -379,25 +496,31 @@ src/
 ├── StatusManager.php              # قراءة config وبناء StatusResult
 ├── IconManager.php                # منطق عرض الأيقونات (fa/bi/ion/heroicon/svg)
 ├── DTO/
-│   └── StatusResult.php           # DTO بواجهة fluent
+│   └── StatusResult.php           # DTO بواجهة fluent + Stringable + JsonSerializable
+├── Casts/
+│   └── StatusCast.php             # Eloquent Cast لتحويل DB إلى StatusResult
 ├── Facades/
 │   ├── Status.php                 # Facade للStatusManager
 │   └── Icon.php                   # Facade للIconManager
 ├── Support/
-│   └── AssetsRenderer.php         # إدراج CDN
+│   └── AssetsRenderer.php         # إدراج CDN مع دعم SRI
 └── Helpers/
-    └── helpers.php                # دوال مساعدة (status_color, icon, ...)
+    └── helpers.php                # دوال مساعدة (status_color, status_exists, ...)
 
 resources/views/components/
-├── status-badge.blade.php         # Anonymous Component للبادج
-└── status-select.blade.php        # Anonymous Component للقائمة المخصصة
+├── status-badge.blade.php         # البادج (ARIA: role="status")
+├── status-badge-wire.blade.php    # البادج Livewire (wire:ignore.self)
+├── status-dot.blade.php           # النقطة اللونية (sm/md/lg)
+├── status-icon.blade.php          # الأيقونة فقط (ARIA: role="img")
+├── status-progress.blade.php      # شريط التقدم (ARIA: progressbar)
+└── status-select.blade.php        # القائمة المخصصة (Alpine.js)
 
 resources/svg/heroicons/           # ملفات SVG مضمّنة (Heroicons)
 
 config/
-├── statuses.php                   # تعريف الحالات (ألوان + hex + أيقونة + variant)
-├── icons.php                      # مapping المفاتيح لأسماء الأيقونات لكل مجموعة
-└── theme.php                      # إعدادات الفريموورك والـ select
+├── statuses.php                   # تعريف الحالات (ألوان + hex + أيقونة + variant + _shared)
+├── icons.php                      # mapping المفاتيح لأسماء الأيقونات لكل مجموعة (مع SRI hashes)
+└── theme.php                      # إعدادات الفريموورك + heroicon_dir + svg_cache + fallback_locale
 
 lang/{ar,en,fr}/statuses.php      # الترجمات
 ```
@@ -419,6 +542,7 @@ vendor/bin/phpunit --filter IconManagerTest
 vendor/bin/phpunit --filter HelpersTest
 vendor/bin/phpunit --filter ServiceProviderTest
 vendor/bin/phpunit --filter AssetsRendererTest
+vendor/bin/phpunit --filter AdvancedTest
 ```
 
 **جودة الكود:**
@@ -470,7 +594,7 @@ php artisan config:clear
 
 **الحل:** عدّل الإعداد ليتطابق مع مشروعك (`bootstrap` أو `tailwind`).
 
-### `<x-status-select>` لا يعمل مع Tailwood
+### `<x-status-select>` لا يعمل مع Tailwind
 
 **السبب:** تأكد أن `config/status-kit-theme.php['default_framework']` = `'tailwind'`.
 
@@ -485,12 +609,12 @@ php artisan config:clear
 1. عدّل الكود وادفعه لفرع `main`
 2. من GitHub: `Releases → Draft a new release`
 3. أنشئ Tag يتبع [Semantic Versioning](https://semver.org):
-   - **Bug fix** → `v1.1.1`
-   - **ميزة جديدة متوافقة** → `v1.2.0`
+   - **Bug fix** → `v1.1.x`
+   - **ميزة جديدة متوافقة** → `v1.x.0`
    - **breaking change** → `v2.0.0`
 4. Packagist يتحدث تلقائياً عبر GitHub webhook
 
-**آخر إصدار: v1.1.1**
+**آخر إصدار: v1.2.0**
 
 ---
 
