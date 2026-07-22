@@ -168,4 +168,136 @@ class AdvancedTest extends TestCase
         // 'paid' is a string reference → resolves to _shared.paid
         $this->assertEquals('success', $result->variant());
     }
+
+    // --- Edge cases ---
+
+    public function test_for_unknown_domain_returns_gray_fallback(): void
+    {
+        $result = Status::for('totally_fake', 'something');
+        $this->assertEquals('gray', $result->variant());
+        $this->assertEquals('#9ca3af', $result->hex());
+    }
+
+    public function test_for_unknown_status_in_valid_domain_returns_gray_fallback(): void
+    {
+        $result = Status::for('payment', 'definitely_not_real');
+        $this->assertEquals('gray', $result->variant());
+    }
+
+    public function test_domain_returns_empty_for_nonexistent(): void
+    {
+        $results = Status::domain('nonexistent_domain_xyz');
+        $this->assertIsArray($results);
+        $this->assertEmpty($results);
+    }
+
+    public function test_label_falls_back_to_headline_for_unknown(): void
+    {
+        $result = Status::for('payment', 'some_unknown_status');
+        $label = $result->label();
+        // Str::headline('some_unknown_status') → 'Some Unknown Status'
+        $this->assertEquals('Some Unknown Status', $label);
+    }
+
+    public function test_label_with_specific_locale(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $labelEn = $result->label('en');
+        $labelFr = $result->label('fr');
+        $labelAr = $result->label('ar');
+        $this->assertEquals('Paid', $labelEn);
+        $this->assertEquals('Payé', $labelFr);
+        $this->assertEquals('مدفوع', $labelAr);
+    }
+
+    public function test_color_returns_bootstrap_class_by_default(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $color = $result->color();
+        $this->assertStringContainsString('text-bg-success', $color);
+    }
+
+    public function test_color_tailwind_returns_classes(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $color = $result->color(framework: 'tailwind');
+        $this->assertStringContainsString('text-green', $color);
+        $this->assertStringContainsString('bg-green', $color);
+    }
+
+    public function test_color_tailwind_dark_mode(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $colorWithDark = $result->color(true, 'tailwind');
+        $colorWithoutDark = $result->color(false, 'tailwind');
+        $this->assertStringContainsString('dark:', $colorWithDark);
+        $this->assertStringNotContainsString('dark:', $colorWithoutDark);
+    }
+
+    public function test_badge_classes_contains_framework_base(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $classes = $result->badgeClasses();
+        $this->assertStringContainsString('badge', $classes);
+        $this->assertStringContainsString('d-inline-flex', $classes);
+    }
+
+    public function test_badge_without_icon_does_not_contain_icon_tag(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $html = $result->badgeWithoutIcon();
+        $this->assertStringNotContainsString('<i ', $html);
+        $this->assertStringNotContainsString('<ion-icon', $html);
+        $this->assertStringContainsString('<span', $html);
+    }
+
+    public function test_icon_only_returns_html_tag(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $html = $result->iconOnly('bi');
+        $this->assertStringContainsString('<i', $html);
+    }
+
+    public function test_light_class_returns_value(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $light = $result->lightClass();
+        $this->assertNotEmpty($light);
+        $this->assertStringContainsString('green', $light);
+    }
+
+    public function test_dark_class_returns_value(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $dark = $result->darkClass();
+        $this->assertNotEmpty($dark);
+        $this->assertStringContainsString('dark:', $dark);
+    }
+
+    public function test_hex_returns_valid_hex(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $hex = $result->hex();
+        $this->assertMatchesRegularExpression('/^#[0-9a-fA-F]{6}$/', $hex);
+    }
+
+    public function test_variant_returns_valid_variant(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $variant = $result->variant();
+        $this->assertContains($variant, ['success', 'warning', 'danger', 'info', 'gray']);
+    }
+
+    public function test_to_array_contains_all_keys(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $array = $result->toArray();
+        $this->assertArrayHasKey('domain', $array);
+        $this->assertArrayHasKey('status', $array);
+        $this->assertArrayHasKey('variant', $array);
+        $this->assertArrayHasKey('color', $array);
+        $this->assertArrayHasKey('hex', $array);
+        $this->assertArrayHasKey('label', $array);
+        $this->assertArrayHasKey('icon', $array);
+    }
 }

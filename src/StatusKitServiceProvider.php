@@ -85,5 +85,27 @@ class StatusKitServiceProvider extends ServiceProvider
         Blade::directive('statusKitAssets', function ($expression) {
             return "<?php echo \\Edzeery\\MyStatusKit\\Support\\AssetsRenderer::render({$expression}); ?>";
         });
+
+        Blade::component('status-kit::components.status-badge-wire', 'status-badge-wire');
+        Blade::component('status-kit::components.status-progress', 'status-progress');
+
+        Blade::directive('statusFor', function (string $expression) {
+            return "<?php foreach(\\Edzeery\\MyStatusKit\\Facades\\Status::domain({$expression}) as \$key => \$statusResult): ?>";
+        });
+
+        Blade::directive('endStatusFor', function () {
+            return '<?php endforeach; ?>';
+        });
+
+        Blade::directive('statusLegend', function (string $expression) {
+            return "<?php
+                \$__statusLegendDomain = {$expression};
+                \$__statusLegendItems = \\Edzeery\\MyStatusKit\\Facades\\Status::domain(\$__statusLegendDomain);
+            ?>";
+        });
+
+        Blade::directive('endStatusLegend', function () {
+            return '<?php endforeach; ?>';
+        });
     }
 }

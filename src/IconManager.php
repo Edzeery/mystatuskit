@@ -47,7 +47,7 @@ class IconManager
         $icon = $icons[$name] ?? $icons['default'] ?? null;
 
         if (! $icon) {
-            return '';
+            return '<!-- status-kit: unknown icon "'.e($name).'" in set "'.e($set).'" -->';
         }
 
         $escapedClasses = $classes ? e($classes) : '';
@@ -98,8 +98,9 @@ class IconManager
             return $this->injectSvgAttributes($this->svgCache[$relative], $classes);
         }
 
+        $customDir = config('status-kit-theme.heroicon_dir');
         $paths = array_filter([
-            resource_path("svg/{$relative}"),
+            $customDir ? $customDir."/{$relative}" : resource_path("svg/{$relative}"),
             __DIR__."/../resources/svg/{$relative}",
         ]);
 
