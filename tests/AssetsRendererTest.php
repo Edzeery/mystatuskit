@@ -27,7 +27,6 @@ class AssetsRendererTest extends TestCase
         $html = AssetsRenderer::render(['ion']);
 
         $this->assertStringContainsString('<script', $html);
-        $html;
         $this->assertStringContainsString('ionicons', $html);
     }
 

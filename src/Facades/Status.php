@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static \Edzeery\MyStatusKit\DTO\StatusResult for(string $domain, string $status)
  * @method static array domain(string $domain)
+ * @method static array domains()
  * @method static bool exists(string $domain, string $status)
  *
  * @see StatusManager

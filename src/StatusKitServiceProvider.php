@@ -24,8 +24,8 @@ class StatusKitServiceProvider extends ServiceProvider
     {
         // نشر الملفات القابلة للتخصيص
         $this->publishes([
-            __DIR__.'/../config/icons.php' => config_path('icons.php'),
-            __DIR__.'/../config/statuses.php' => config_path('statuses.php'),
+            __DIR__.'/../config/icons.php' => config_path('status-kit-icons.php'),
+            __DIR__.'/../config/statuses.php' => config_path('status-kit-statuses.php'),
             __DIR__.'/../config/theme.php' => config_path('status-kit-theme.php'),
         ], 'status-kit-config');
 
@@ -41,38 +41,47 @@ class StatusKitServiceProvider extends ServiceProvider
             __DIR__.'/../resources/svg' => resource_path('svg'),
         ], 'status-kit-svg');
 
+        $this->publishes([
+            __DIR__.'/../src/Casts' => app_path('Casts/StatusKit'),
+        ], 'status-kit-casts');
+
         // تحميل المصادر مباشرة (تعمل حتى بدون نشر)
-        // ملاحظة: namespace الترجمة "status-kit" لازم يطابق اسم مجلد النشر أعلاه
-        // (lang/vendor/status-kit) حتى تُقرأ الترجمات المخصصة تلقائيًا بعد النشر.
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'status-kit');
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'status-kit');
 
-        // إن قام المستخدم بنشر config/statuses.php أو config/icons.php أو config/status-kit-theme.php
-        // محليًا، تُدمج فوق الافتراضي
-        if (is_file(config_path('icons.php'))) {
-            $this->app['config']->set('status-kit-icons', array_replace_recursive(
-                config('status-kit-icons', []),
-                require config_path('icons.php')
-            ));
-        }
-        if (is_file(config_path('statuses.php'))) {
-            $this->app['config']->set('status-kit-statuses', array_replace_recursive(
-                config('status-kit-statuses', []),
-                require config_path('statuses.php')
-            ));
-        }
-        if (is_file(config_path('status-kit-theme.php'))) {
-            $this->app['config']->set('status-kit-theme', array_replace_recursive(
-                config('status-kit-theme', []),
-                require config_path('status-kit-theme.php')
-            ));
-        }
+        $this->mergePublishedConfigs();
+        $this->registerBladeComponents();
+    }
 
+    /**
+     * دمج configs المنشورة يدوياً (لأن أسماء الملفات المنشورة تختلف عن مفاتيح config).
+     */
+    private function mergePublishedConfigs(): void
+    {
+        $mappings = [
+            'status-kit-icons.php' => 'status-kit-icons',
+            'status-kit-statuses.php' => 'status-kit-statuses',
+            'status-kit-theme.php' => 'status-kit-theme',
+        ];
+
+        foreach ($mappings as $file => $key) {
+            $path = config_path($file);
+            if (is_file($path)) {
+                $this->app['config']->set($key, array_replace_recursive(
+                    config($key, []),
+                    require $path
+                ));
+            }
+        }
+    }
+
+    private function registerBladeComponents(): void
+    {
         Blade::component('status-kit::components.status-badge', 'status-badge');
         Blade::component('status-kit::components.status-icon', 'status-icon');
         Blade::component('status-kit::components.status-select', 'status-select');
+        Blade::component('status-kit::components.status-dot', 'status-dot');
 
-        // @statusKitAssets(['fa','bi']) لإدراج روابط CDN لمكتبات الأيقونات مباشرة
         Blade::directive('statusKitAssets', function ($expression) {
             return "<?php echo \\Edzeery\\MyStatusKit\\Support\\AssetsRenderer::render({$expression}); ?>";
         });

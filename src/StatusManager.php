@@ -6,43 +6,44 @@ use Edzeery\MyStatusKit\DTO\StatusResult;
 
 class StatusManager
 {
+    private const FALLBACK = [
+        'variant' => 'gray',
+        'light' => 'text-gray-700 bg-gray-100',
+        'dark' => 'dark:text-gray-300 dark:bg-gray-800',
+        'hex' => '#9ca3af',
+        'icon' => 'default',
+    ];
+
     public function __construct(protected IconManager $iconManager) {}
 
     /**
-     * جلب حالة من نطاق معيّن.
+     * Retrieve a status result for a given domain and status name.
      *
-     * يدعم نظام _shared:
-     *   - string: يأخذ من _shared بالكامل
-     *   - array مع icon فقط: يدمج مع _shared
-     *   - array كامل: حالة خاصة بالنطاق
+     * Supports the _shared resolution system:
+     *   - string value: inherits full definition from _shared
+     *   - array without 'variant': partially merged with _shared
+     *   - array with 'variant': standalone domain-specific definition
      *
-     * إذا لم توجد الحالة، تُرجع الحالة الافتراضية (_shared.default).
+     * Falls back to the default status (_shared.default) when not found.
+     *
+     * @param  string  $domain  The domain name (e.g. 'payment', 'order').
+     * @param  string  $status  The status key within the domain (e.g. 'paid', 'pending').
      */
     public function for(string $domain, string $status): StatusResult
     {
-        $data = config("status-kit-statuses.{$domain}.{$status}");
-
-        // الحالة مشروحة من _shared كـ string
-        if (is_string($data)) {
-            $shared = config("status-kit-statuses._shared.{$data}", []);
-            $data = ! empty($shared) ? $shared : $this->fallback();
-        }
-
-        // الحالة array مع تعديلات بسيطة (icon مثلاً) → تدمج مع _shared
-        if (is_array($data) && $this->isPartialOverride($data)) {
-            $shared = config("status-kit-statuses._shared.{$status}", []);
-            $data = array_merge($shared, $data);
-        }
-
-        // fallback
-        if ($data === null || $data === []) {
-            $data = $this->fallback();
-        }
+        $data = $this->resolveData($domain, $status);
 
         return new StatusResult($domain, $status, $data, $this->iconManager);
     }
 
-    /** كل حالات نطاق معيّن، جاهزة كـ StatusResult (مفيد لبناء select/legend) */
+    /**
+     * Get all statuses within a domain as StatusResult instances.
+     *
+     * Useful for building select dropdowns, legends, or status listings.
+     *
+     * @param  string  $domain  The domain name to retrieve statuses for.
+     * @return array<string, StatusResult>
+     */
     public function domain(string $domain): array
     {
         $items = config("status-kit-statuses.{$domain}", []);
@@ -53,54 +54,106 @@ class StatusManager
                 continue;
             }
 
-            // حل حالات _shared (string أو array جزئي)
-            if (is_string($data)) {
-                $shared = config("status-kit-statuses._shared.{$data}", []);
-                $data = ! empty($shared) ? $shared : $this->fallback();
-            } elseif (is_array($data) && $this->isPartialOverride($data)) {
-                $shared = config("status-kit-statuses._shared.{$status}", []);
-                $data = array_merge($shared, $data);
-            }
-
-            $result[$status] = new StatusResult($domain, $status, $data, $this->iconManager);
+            $resolved = $this->resolveData($domain, $status);
+            $result[$status] = new StatusResult($domain, $status, $resolved, $this->iconManager);
         }
 
         return $result;
     }
 
-    /** هل الحالة معرّفة أصلاً في الconfig */
+    /**
+     * Get a list of all defined domain names (excluding _shared).
+     *
+     * @return array<int, string>
+     */
+    public function domains(): array
+    {
+        $all = config('status-kit-statuses', []);
+
+        return array_values(array_diff(array_keys($all), ['_shared']));
+    }
+
+    /**
+     * Check whether a status is defined in the configuration.
+     *
+     * @param  string  $domain  The domain name.
+     * @param  string  $status  The status key.
+     */
     public function exists(string $domain, string $status): bool
     {
         return config("status-kit-statuses.{$domain}.{$status}") !== null;
     }
 
     /**
+     * Register a new status at runtime without publishing a config file.
+     *
+     * @param  string  $domain  The domain to register the status under.
+     * @param  string  $status  The status key name.
+     * @param  array  $data  Status definition array (variant, hex, icon, light, dark, etc.).
+     */
+    public function register(string $domain, string $status, array $data): void
+    {
+        $existing = config("status-kit-statuses.{$domain}", []);
+        $existing[$status] = $data;
+
+        config(["status-kit-statuses.{$domain}" => $existing]);
+    }
+
+    /**
+     * Register multiple statuses under a single domain at once.
+     *
+     * @param  string  $domain  The domain to register statuses under.
+     * @param  array  $statuses  Associative array of status key => definition pairs.
+     */
+    public function registerMany(string $domain, array $statuses): void
+    {
+        foreach ($statuses as $status => $data) {
+            $this->register($domain, $status, $data);
+        }
+    }
+
+    /**
+     * حل بيانات الحالة: string → _shared، array جزئي → دمج مع _shared.
+     */
+    private function resolveData(string $domain, string $status): array
+    {
+        $data = config("status-kit-statuses.{$domain}.{$status}");
+
+        // الحالة مشروحة من _shared كـ string
+        if (is_string($data)) {
+            $shared = config("status-kit-statuses._shared.{$data}", []);
+
+            return ! empty($shared) ? $shared : $this->fallback();
+        }
+
+        // الحالة array مع تعديلات جزئية → تدمج مع _shared
+        if (is_array($data) && $this->isPartialOverride($data)) {
+            $shared = config("status-kit-statuses._shared.{$status}", []);
+
+            return array_merge($shared, $data);
+        }
+
+        // fallback
+        if ($data === null || $data === []) {
+            return $this->fallback();
+        }
+
+        return $data;
+    }
+
+    /**
      * هل هذا تعديل جزئي فقط (مثل ['icon' => 'paid'])؟
-     * الحالة تُconsider جزئية إذا كانت array وكل قيمها string (أيقونات فقط).
+     *
+     * تُconsider جزئية إذا كانت array لا تحتوي مفتاح 'variant' —
+     * لأن 'variant' هو الحقل الأساسي الذي يميّز تعريف الحالة الكامل.
      */
     private function isPartialOverride(array $data): bool
     {
-        if (empty($data)) {
-            return true;
-        }
-
-        foreach ($data as $key => $value) {
-            if (! is_string($value)) {
-                return false;
-            }
-        }
-
-        return true;
+        return ! array_key_exists('variant', $data);
     }
 
     private function fallback(): array
     {
-        return config('status-kit-statuses._shared.default', [
-            'variant' => 'gray',
-            'light' => 'text-gray-700 bg-gray-100',
-            'dark' => 'dark:text-gray-300 dark:bg-gray-800',
-            'hex' => '#9ca3af',
-            'icon' => 'default',
-        ]);
+        return config('status-kit-statuses._shared.default', self::FALLBACK);
     }
 }

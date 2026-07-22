@@ -5,14 +5,35 @@ namespace Edzeery\MyStatusKit\DTO;
 use Edzeery\MyStatusKit\IconManager;
 use Illuminate\Support\Str;
 
-class StatusResult
+class StatusResult implements \JsonSerializable
 {
+    private const FALLBACK = [
+        'variant' => 'gray',
+        'light' => 'text-gray-700 bg-gray-100',
+        'dark' => 'dark:text-gray-300 dark:bg-gray-800',
+        'hex' => '#9ca3af',
+        'icon' => 'default',
+    ];
+
+    /** @var array|null كاش لبيانات الحالة بعد الحل (يمنع استدعاء config عدة مرات) */
+    private ?array $resolvedCache = null;
+
     public function __construct(
         protected string $domain,
         protected string $status,
         protected array|string $data,
         protected IconManager $iconManager,
     ) {}
+
+    public function __toString(): string
+    {
+        return $this->label();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
 
     /** اسم عام محايد success|warning|danger|info|gray */
     public function variant(): string
@@ -59,6 +80,24 @@ class StatusResult
     public function hex(): string
     {
         return $this->resolvedData()['hex'] ?? '#9ca3af';
+    }
+
+    /** هل هذه الحالة مطابقة لاسم معين؟ */
+    public function is(string $status): bool
+    {
+        return $this->status === $status;
+    }
+
+    /** هل هذه الحالة في قائمة محددة؟ */
+    public function isOneOf(array $statuses): bool
+    {
+        return in_array($this->status, $statuses, true);
+    }
+
+    /** هل هذه الحالة تنتمي لنطاق معين؟ */
+    public function inDomain(string $domain): bool
+    {
+        return $this->domain === $domain;
     }
 
     /**
@@ -123,32 +162,31 @@ class StatusResult
         $data = $this->resolvedData();
 
         return [
-            'domain'  => $this->domain,
-            'status'  => $this->status,
+            'domain' => $this->domain,
+            'status' => $this->status,
             'variant' => $this->variant(),
-            'color'   => $this->color(),
-            'hex'     => $this->hex(),
-            'label'   => $this->label(),
-            'icon'    => $data['icon'] ?? 'default',
+            'color' => $this->color(),
+            'hex' => $this->hex(),
+            'label' => $this->label(),
+            'icon' => $data['icon'] ?? 'default',
         ];
     }
 
     /**
      * إرجاع البيانات كمصفوفة مُحلّاة (يحل مشكلة string data من _shared).
+     * النتيجة مُخزّنة مؤقتاً لتقليل استدعاءات config().
      */
     private function resolvedData(): array
     {
+        if ($this->resolvedCache !== null) {
+            return $this->resolvedCache;
+        }
+
         if (is_array($this->data)) {
-            return $this->data;
+            return $this->resolvedCache = $this->data;
         }
 
         // data = string (اسم من _shared)
-        return config("status-kit-statuses._shared.{$this->data}", [
-            'variant' => 'gray',
-            'light' => 'text-gray-700 bg-gray-100',
-            'dark' => 'dark:text-gray-300 dark:bg-gray-800',
-            'hex' => '#9ca3af',
-            'icon' => 'default',
-        ]);
+        return $this->resolvedCache = config("status-kit-statuses._shared.{$this->data}", self::FALLBACK);
     }
 }

@@ -4,7 +4,6 @@ use Edzeery\MyStatusKit\DTO\StatusResult;
 use Edzeery\MyStatusKit\Facades\Icon;
 use Edzeery\MyStatusKit\Facades\Status;
 use Edzeery\MyStatusKit\Support\AssetsRenderer;
-use Illuminate\Support\Str;
 
 if (! function_exists('status')) {
     /** جلب كائن الحالة الكامل (fluent): status('payment','paid')->color()->icon()... */
@@ -65,18 +64,36 @@ if (! function_exists('svg_icon')) {
 }
 
 if (! function_exists('getIconHtml')) {
-    /** توافق كامل مع الدالة القديمة getIconHtml() */
+    /**
+     * @deprecated استخدم icon() بدلاً منها — ستُزال في الإصدار القادم.
+     */
     function getIconHtml(string $name, ?string $set = null, ?string $classes = null): string
     {
-        if (Str::startsWith($name, '<')) {
-            return $name;
-        }
+        return icon($name, $set, $classes);
+    }
+}
 
-        if ($set === 'svg') {
-            return Icon::svg($name, $classes ?? '') ?? '';
-        }
+if (! function_exists('status_exists')) {
+    /** هل الحالة معرّفة في الconfig؟ */
+    function status_exists(string $domain, string $status): bool
+    {
+        return Status::exists($domain, $status);
+    }
+}
 
-        return Icon::render($name, $set ?? config('status-kit-icons.default_set', 'ion'), $classes ?? '');
+if (! function_exists('status_domain')) {
+    /** جلب كل حالات نطاق معين كمصفوفة من StatusResult */
+    function status_domain(string $domain): array
+    {
+        return Status::domain($domain);
+    }
+}
+
+if (! function_exists('status_domains')) {
+    /** جلب قائمة بأسماء كل النطاقات المعرّفة */
+    function status_domains(): array
+    {
+        return Status::domains();
     }
 }
 
