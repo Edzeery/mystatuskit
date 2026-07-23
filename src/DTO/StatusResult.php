@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class StatusResult implements \JsonSerializable
 {
-    private const FALLBACK = [
+    public const FALLBACK = [
         'variant' => 'gray',
         'light' => 'text-gray-700 bg-gray-100',
         'dark' => 'dark:text-gray-300 dark:bg-gray-800',
@@ -79,7 +79,9 @@ class StatusResult implements \JsonSerializable
 
     public function hex(): string
     {
-        return $this->resolvedData()['hex'] ?? '#9ca3af';
+        $hex = $this->resolvedData()['hex'] ?? '#9ca3af';
+
+        return preg_match('/^#[0-9a-fA-F]{6}$/', $hex) ? $hex : '#9ca3af';
     }
 
     /** هل هذه الحالة مطابقة لاسم معين؟ */

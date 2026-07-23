@@ -2,6 +2,7 @@
     'domain',
     'status',
     'size' => 'md', // sm | md | lg
+    'class' => '',
 ])
 
 @php

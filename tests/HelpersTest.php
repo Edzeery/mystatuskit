@@ -123,5 +123,8 @@ class HelpersTest extends TestCase
         $this->assertTrue(function_exists('svg_icon'));
         $this->assertTrue(function_exists('getIconHtml'));
         $this->assertTrue(function_exists('status_kit_assets'));
+        $this->assertTrue(function_exists('status_exists'));
+        $this->assertTrue(function_exists('status_domain'));
+        $this->assertTrue(function_exists('status_domains'));
     }
 }

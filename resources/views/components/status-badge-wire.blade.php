@@ -4,7 +4,6 @@
     'set'   => null,
     'icon'  => true,
     'class' => '',
-    'live'  => true,
 ])
 
 @php

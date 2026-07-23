@@ -41,6 +41,7 @@ return [
     'select_classes' => [
         'bootstrap' => [
             'container' => '',
+            'wrapper' => 'd-inline-flex align-items-center',
             'trigger' => 'form-control d-flex align-items-center justify-content-between',
             'trigger_sm' => 'form-control form-control-sm d-flex align-items-center justify-content-between',
             'trigger_lg' => 'form-control d-flex align-items-center justify-content-between',
@@ -62,6 +63,7 @@ return [
         ],
         'tailwind' => [
             'container' => '',
+            'wrapper' => 'inline-flex items-center',
             'trigger' => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-gray-100',
             'trigger_sm' => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-xs text-gray-900 dark:text-gray-100',
             'trigger_lg' => 'flex items-center justify-between w-full text-start bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base text-gray-900 dark:text-gray-100',

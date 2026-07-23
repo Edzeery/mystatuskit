@@ -330,7 +330,7 @@ return [
         'failed' => 'failed', 'paid' => 'paid', 'unpaid' => 'unpaid',
         'refunded' => 'refunded', 'expired' => 'expired', 'processing' => 'processing',
         'closed' => 'closed', 'online' => 'online', 'offline' => 'offline',
-        'verified' => 'verified', 'archived' => 'archived', 'deleted' => 'deleted',
+        'archived' => 'archived', 'deleted' => 'deleted',
 
         // ── ألوان عامة ──
         'info' => ['variant' => 'info',    'light' => 'text-blue-700 bg-blue-100', 'dark' => 'dark:text-blue-300 dark:bg-blue-900/40', 'hex' => '#2563eb', 'icon' => 'info'],

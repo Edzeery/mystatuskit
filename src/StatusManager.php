@@ -6,14 +6,6 @@ use Edzeery\MyStatusKit\DTO\StatusResult;
 
 class StatusManager
 {
-    private const FALLBACK = [
-        'variant' => 'gray',
-        'light' => 'text-gray-700 bg-gray-100',
-        'dark' => 'dark:text-gray-300 dark:bg-gray-800',
-        'hex' => '#9ca3af',
-        'icon' => 'default',
-    ];
-
     public function __construct(protected IconManager $iconManager) {}
 
     /**
@@ -154,6 +146,6 @@ class StatusManager
 
     private function fallback(): array
     {
-        return config('status-kit-statuses._shared.default', self::FALLBACK);
+        return config('status-kit-statuses._shared.default', StatusResult::FALLBACK);
     }
 }

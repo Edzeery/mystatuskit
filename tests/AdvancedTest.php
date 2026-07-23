@@ -300,4 +300,101 @@ class AdvancedTest extends TestCase
         $this->assertArrayHasKey('label', $array);
         $this->assertArrayHasKey('icon', $array);
     }
+
+    // --- SVG Sanitization ---
+
+    public function test_sanitize_svg_removes_script_tags(): void
+    {
+        $svg = '<svg><script>alert("xss")</script><circle r="10"/></svg>';
+        $manager = new \Edzeery\MyStatusKit\IconManager();
+        $reflection = new \ReflectionClass($manager);
+        $method = $reflection->getMethod('sanitizeSvg');
+        $method->setAccessible(true);
+
+        $clean = $method->invoke($manager, $svg);
+        $this->assertStringNotContainsString('<script', $clean);
+        $this->assertStringContainsString('<circle', $clean);
+    }
+
+    public function test_sanitize_svg_removes_event_handlers(): void
+    {
+        $svg = '<svg onload="alert(1)" onclick="steal()"><circle r="10"/></svg>';
+        $manager = new \Edzeery\MyStatusKit\IconManager();
+        $reflection = new \ReflectionClass($manager);
+        $method = $reflection->getMethod('sanitizeSvg');
+        $method->setAccessible(true);
+
+        $clean = $method->invoke($manager, $svg);
+        $this->assertStringNotContainsString('onload', $clean);
+        $this->assertStringNotContainsString('onclick', $clean);
+    }
+
+    public function test_sanitize_svg_removes_foreign_object(): void
+    {
+        $svg = '<svg><foreignObject><div>evil</div></foreignObject><circle r="10"/></svg>';
+        $manager = new \Edzeery\MyStatusKit\IconManager();
+        $reflection = new \ReflectionClass($manager);
+        $method = $reflection->getMethod('sanitizeSvg');
+        $method->setAccessible(true);
+
+        $clean = $method->invoke($manager, $svg);
+        $this->assertStringNotContainsString('foreignObject', $clean);
+        $this->assertStringContainsString('<circle', $clean);
+    }
+
+    public function test_sanitize_svg_removes_use_tags(): void
+    {
+        $svg = '<svg><use href="external.svg"/><circle r="10"/></svg>';
+        $manager = new \Edzeery\MyStatusKit\IconManager();
+        $reflection = new \ReflectionClass($manager);
+        $method = $reflection->getMethod('sanitizeSvg');
+        $method->setAccessible(true);
+
+        $clean = $method->invoke($manager, $svg);
+        $this->assertStringNotContainsString('<use', $clean);
+    }
+
+    public function test_sanitize_svg_removes_data_uris(): void
+    {
+        $svg = '<svg><a href="data:text/html,<script>alert(1)</script>"><circle r="10"/></a></svg>';
+        $manager = new \Edzeery\MyStatusKit\IconManager();
+        $reflection = new \ReflectionClass($manager);
+        $method = $reflection->getMethod('sanitizeSvg');
+        $method->setAccessible(true);
+
+        $clean = $method->invoke($manager, $svg);
+        $this->assertStringNotContainsString('data:', $clean);
+    }
+
+    // --- Hex Validation ---
+
+    public function test_hex_returns_valid_hex_for_valid_config(): void
+    {
+        $result = Status::for('payment', 'paid');
+        $hex = $result->hex();
+        $this->assertMatchesRegularExpression('/^#[0-9a-fA-F]{6}$/', $hex);
+    }
+
+    public function test_hex_returns_fallback_for_invalid_hex(): void
+    {
+        config()->set('status-kit-statuses.payment.test_bad_hex', [
+            'variant' => 'info',
+            'hex' => 'not-a-hex-color',
+            'icon' => 'default',
+        ]);
+        config()->set('status-kit-statuses.payment.test_bad_hex.light', 'text-blue');
+        config()->set('status-kit-statuses.payment.test_bad_hex.dark', 'dark:text-blue');
+
+        $result = Status::for('payment', 'test_bad_hex');
+        $this->assertEquals('#9ca3af', $result->hex());
+    }
+
+    // --- SRI Attributes ---
+
+    public function test_assets_renderer_includes_sri_integrity(): void
+    {
+        $html = \Edzeery\MyStatusKit\Support\AssetsRenderer::render(['fa']);
+        $this->assertStringContainsString('integrity="', $html);
+        $this->assertStringContainsString('crossorigin="anonymous"', $html);
+    }
 }

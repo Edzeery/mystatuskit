@@ -29,6 +29,7 @@ class IconManager
     public function render(string $name, ?string $set = null, ?string $classes = null): string
     {
         if (Str::startsWith($name, '<')) {
+            // Raw HTML passed — only safe when $name comes from trusted config
             return $name;
         }
 
@@ -144,11 +145,24 @@ class IconManager
      */
     private function sanitizeSvg(string $svg): string
     {
-        // إزالة عناصر <script> و </script> ومحتواها
+        // Remove <script> tags and contents
         $svg = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $svg);
 
-        // إزالة on* event handlers (onclick, onload, onerror, إلخ)
+        // Remove on* event handlers
         $svg = preg_replace('/\s+on\w+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $svg);
+
+        // Remove <foreignObject> tags and contents
+        $svg = preg_replace('/<foreignObject\b[^>]*>.*?<\/foreignObject>/is', '', $svg);
+
+        // Remove <use> tags (potential external entity injection)
+        $svg = preg_replace('/<use\b[^>]*\/>/i', '', $svg);
+        $svg = preg_replace('/<use\b[^>]*>.*?<\/use>/is', '', $svg);
+
+        // Remove data: URIs in attributes
+        $svg = preg_replace('/((?:href|xlink:href)\s*=\s*(?:"data:[^"]*"|\'data:[^\']*\'|data:[^\s>]+))/i', '', $svg);
+
+        // Remove <animate> with values attribute (can contain URLs)
+        $svg = preg_replace('/<animate\b[^>]*values\s*=\s*(?:"[^"]*"|\'[^\']*\')[^>]*\/?>/i', '', $svg);
 
         return $svg;
     }
