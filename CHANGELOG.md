@@ -1,5 +1,44 @@
 # Changelog
 
+## v1.2.1
+
+### إصلاحات أمنية
+
+- **تنقيح SVG محسّن** — `sanitizeSvg()` الآن يزيل `<foreignObject>`, `<use>` بـ href خارجي, `data:` URIs, و `<animate>` بـ `values` (كان يزيل فقط `<script>` و `on*` handlers)
+- **تحقق hex في `StatusResult::hex()`** — يرفض أي قيمة لا تتطابق مع `#rrggbb` ويعيد `#9ca3af` كـ fallback (يمنع CSS injection عبر config مُعرَّف يدوياً)
+- **توثيق raw HTML** — `IconManager::render()` الآن يوثق أن تمرير HTML يبدأ بـ `<` يجب أن يأتي من config موثوق فقط
+
+### إصلاحات جودة الكود
+
+- **ثابت `FALLBACK` مشترك** — `StatusResult::FALLBACK` أصبح `public`، و `StatusManager::fallback()` يُشير إليه بدل تكرار المصفوفة
+- **StatusCast type safety** — `get()` و `set()` الآن يستقبلان `Model $model` و `mixed $value` مع `is_scalar()` بدل `is_string()`
+
+### إصلاحات اتساق
+
+- **`<x-status-dot>`** — خاصية `class` أُضيفت رسمياً لـ `@props`
+- **`<x-status-badge-wire>`** — خاصية `live` غير المستخدمة أُزيلت
+- **heroicon config** — 18+ أيقونة مُعاد تعيينها من ملفات SVG ناقصة إلى ملفات موجودة (checked, trash → x-circle, truck → arrow-path, etc.)
+- **`config/statuses.php`** — مفتاح `verified` المكرر (string reference) أُزيل، بقي المصفوفة فقط
+- **`config/theme.php`** — كلاسات Tailwind أُضيفت لـ select wrapper (`inline-flex items-center`)
+
+### تحسينات API
+
+- **PHPDoc مكتمل** — `register()` و `registerMany()` أُضيفتا لـ Status Facade
+
+### اختبارات (+16 اختبار جديد = 125 المجموع)
+
+- `StatusCastTest.php` — 8 اختبارات (get/set مع أنواع مختلفة)
+- SVG sanitization — 5 اختبارات (script, event handlers, foreignObject, use, data:)
+- Hex validation — 2 اختبار (صحيح/خاطئ)
+- SRI integrity — 1 اختبار
+
+### توثيق
+
+- مثال `<x-status-badge-wire>` مُصحّح (Livewire dynamic binding)
+- عدد الحالات مُحدّث: "90+" → "280+"
+
+---
+
 ## v1.2.0
 
 ### ميزات جديدة
