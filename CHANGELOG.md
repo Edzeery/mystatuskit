@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.2.2
+
+### إصلاحات
+
+- **توافق رجوعي مع أسماء ملفات config** — `ServiceProvider` الآن يدعم الأسماء الجديدة (`status-kit-icons.php`, `status-kit-statuses.php`, `status-kit-theme.php`) **و** القديمة (`icons.php`, `statuses.php`, `theme.php`). المستخدمون الذين نشروا الملفات بالأسماء القديمة (v1.1.x) لن يتأثروا.
+- **نشر مزدوج** — `vendor:publish` يُنشئ الملفات بالأسماء الجديدة تلقائياً. للمستخدمين الجدد: `status-kit-config`. للقديمين: `status-kit-config-legacy`.
+
+---
+
 ## v1.2.1
 
 ### إصلاحات أمنية

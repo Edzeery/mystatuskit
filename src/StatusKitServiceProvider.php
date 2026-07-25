@@ -22,12 +22,19 @@ class StatusKitServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // نشر الملفات القابلة للتخصيص
+        // نشر الملفات — الأسماء الجديدة (v1.2.0+)
         $this->publishes([
             __DIR__.'/../config/icons.php' => config_path('status-kit-icons.php'),
             __DIR__.'/../config/statuses.php' => config_path('status-kit-statuses.php'),
             __DIR__.'/../config/theme.php' => config_path('status-kit-theme.php'),
         ], 'status-kit-config');
+
+        // نشر الأسماء القديمة (v1.1.x) — للتوافق مع المشروعات الحالية
+        $this->publishes([
+            __DIR__.'/../config/icons.php' => config_path('icons.php'),
+            __DIR__.'/../config/statuses.php' => config_path('statuses.php'),
+            __DIR__.'/../config/theme.php' => config_path('theme.php'),
+        ], 'status-kit-config-legacy');
 
         $this->publishes([
             __DIR__.'/../lang' => $this->app->langPath('vendor/status-kit'),
@@ -54,14 +61,19 @@ class StatusKitServiceProvider extends ServiceProvider
     }
 
     /**
-     * دمج configs المنشورة يدوياً (لأن أسماء الملفات المنشورة تختلف عن مفاتيح config).
+     * دمج configs المنشورة يدوياً — يدعم الأسماء الجديدة (status-kit-*) والقديمة (بدون prefix).
+     *
+     * الأولوية: القديم > الجديد (لأن المستخدمينEXISTING قد نشرو بالأسماء القديمة).
      */
     private function mergePublishedConfigs(): void
     {
         $mappings = [
             'status-kit-icons.php' => 'status-kit-icons',
+            'icons.php' => 'status-kit-icons',
             'status-kit-statuses.php' => 'status-kit-statuses',
+            'statuses.php' => 'status-kit-statuses',
             'status-kit-theme.php' => 'status-kit-theme',
+            'theme.php' => 'status-kit-theme',
         ];
 
         foreach ($mappings as $file => $key) {
